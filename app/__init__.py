@@ -39,3 +39,15 @@ def create_app(config_class=Config):
             app.logger.warning(f"Auto-seed check: {e}")
 
     return app
+
+# Module-level lazy attribute so `gunicorn app:app` works out of the box on Render
+_app_instance = None
+
+def __getattr__(name):
+    global _app_instance
+    if name == 'app':
+        if _app_instance is None:
+            _app_instance = create_app()
+        return _app_instance
+    raise AttributeError(f"module '{__name__}' has no attribute '{name}'")
+
