@@ -11,19 +11,19 @@
     <!-- Bootstrap Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <!-- Royal Theme CSS -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/royal-theme.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/royal-theme.css') }}?v=2.2">
     {% block extra_head %}{% endblock %}
 </head>
 <body>
 
     <!-- Top Announcement & Contact Bar -->
     <div class="py-1 px-3 d-none d-md-block" style="background: #2e0413; color: #e5c158; font-size: 0.85rem; border-bottom: 1px solid rgba(201,154,44,0.3);">
-        <div class="container d-flex justify-content-between align-items-center">
-            <div>
+        <div class="container-fluid px-3 px-xl-5 d-flex justify-content-between align-items-center">
+            <div class="text-nowrap">
                 <span><i class="bi bi-geo-alt-fill me-1 text-danger"></i> Miyawala Chowk, Raipur Road, Dehradun</span>
                 <span class="ms-3"><i class="bi bi-clock-fill me-1 text-warning"></i> Open Daily: 7:00 AM – 10:00 PM</span>
             </div>
-            <div class="d-flex align-items-center gap-3">
+            <div class="d-flex align-items-center gap-3 text-nowrap">
                 <a href="tel:+919412153429" class="text-decoration-none text-light">
                     <i class="bi bi-telephone-fill me-1 text-warning"></i> +91 94121 53429
                 </a>
@@ -40,64 +40,64 @@
     </div>
 
     <!-- Main Royal Navbar (Focused Exclusively on Visitors) -->
-    <nav class="navbar navbar-expand-lg royal-navbar sticky-top">
-        <div class="container">
-            <a class="navbar-brand d-flex align-items-center gap-2" href="{{ url_for('public_bp.index') }}">
-                <div class="d-flex align-items-center justify-content-center rounded-circle" style="width: 44px; height: 44px; background: linear-gradient(135deg, #d4af37, #9e7518); border: 2px solid #ffffff;">
+    <nav class="navbar navbar-expand-xl royal-navbar sticky-top">
+        <div class="container-fluid px-3 px-xl-5">
+            <a class="navbar-brand d-flex align-items-center gap-2 py-1 text-nowrap" href="{{ url_for('public_bp.index') }}">
+                <div class="d-flex align-items-center justify-content-center rounded-circle flex-shrink-0" style="width: 42px; height: 42px; background: linear-gradient(135deg, #d4af37, #9e7518); border: 2px solid #ffffff;">
                     <i class="bi bi-crown-fill text-dark fs-5"></i>
                 </div>
-                <div>
-                    <span class="royal-brand-title d-block fs-5 lh-1">NEW LUCKY GROUP</span>
-                    <small class="text-white-50" style="font-size: 0.65rem; letter-spacing: 1px;">SWEETS & DAIRY • FAMILY RESTAURANT • RESIDENCY</small>
+                <div class="lh-1">
+                    <span class="royal-brand-title d-block fs-5">NEW LUCKY GROUP</span>
+                    <small class="text-white-50 d-none d-sm-block" style="font-size: 0.62rem; letter-spacing: 0.8px;">SWEETS & DAIRY • RESTAURANT • RESIDENCY</small>
                 </div>
             </a>
 
             <!-- Mobile Action Buttons -->
-            <div class="d-flex align-items-center gap-2 d-lg-none">
-                <button class="btn btn-sm btn-royal-gold px-3 rounded-pill" type="button" data-bs-toggle="offcanvas" data-bs-target="#cartOffcanvas">
-                    <i class="bi bi-bag-fill me-1"></i>
+            <div class="d-flex align-items-center gap-2 d-xl-none">
+                <button class="btn btn-sm btn-royal-gold px-3 rounded-pill d-inline-flex align-items-center gap-1 text-nowrap" type="button" data-bs-toggle="offcanvas" data-bs-target="#cartOffcanvas">
+                    <i class="bi bi-bag-fill"></i>
                     <span class="cart-count-badge badge bg-danger rounded-pill">0</span>
                 </button>
-                <button class="navbar-toggler border-0 text-white" type="button" data-bs-toggle="collapse" data-bs-target="#royalNav">
+                <button class="navbar-toggler border-0 text-white p-1" type="button" data-bs-toggle="collapse" data-bs-target="#royalNav">
                     <i class="bi bi-list fs-1 text-warning"></i>
                 </button>
             </div>
 
             <div class="collapse navbar-collapse justify-content-center" id="royalNav">
-                <ul class="navbar-nav mb-2 mb-lg-0 gap-1 gap-lg-2">
+                <ul class="navbar-nav mb-2 mb-xl-0 gap-1 gap-xl-2 align-items-xl-center">
                     <li class="nav-item">
-                        <a class="nav-link royal-nav-link" href="{{ url_for('public_bp.index') }}">
-                            <i class="bi bi-house-door me-1"></i> Home
+                        <a class="nav-link royal-nav-link text-nowrap {% if request.path == '/' %}active{% endif %}" href="{{ url_for('public_bp.index') }}">
+                            <i class="bi bi-house-door me-1"></i><span>Home</span>
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link royal-nav-link" href="{{ url_for('public_bp.products') }}">
-                            <i class="bi bi-basket2-fill text-warning me-1"></i> Products (Sweets & Dairy)
+                        <a class="nav-link royal-nav-link text-nowrap {% if request.path == '/products' %}active{% endif %}" href="{{ url_for('public_bp.products') }}">
+                            <i class="bi bi-basket2-fill text-warning me-1"></i><span>Sweets & Dairy</span>
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link royal-nav-link" href="{{ url_for('public_bp.restaurant') }}">
-                            <i class="bi bi-egg-fried text-warning me-1"></i> Family Restaurant
+                        <a class="nav-link royal-nav-link text-nowrap {% if request.path == '/restaurant' %}active{% endif %}" href="{{ url_for('public_bp.restaurant') }}">
+                            <i class="bi bi-egg-fried text-warning me-1"></i><span>Family Restaurant</span>
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link royal-nav-link" href="{{ url_for('public_bp.hotel') }}">
-                            <i class="bi bi-building text-warning me-1"></i> Hotel Residency
+                        <a class="nav-link royal-nav-link text-nowrap {% if request.path == '/hotel' %}active{% endif %}" href="{{ url_for('public_bp.hotel') }}">
+                            <i class="bi bi-building text-warning me-1"></i><span>Hotel Residency</span>
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link royal-nav-link" href="{{ url_for('public_bp.track_order_search') }}">
-                            <i class="bi bi-crosshair text-warning me-1"></i> Track Order
+                        <a class="nav-link royal-nav-link text-nowrap {% if request.path == '/track' or '/track/' in request.path %}active{% endif %}" href="{{ url_for('public_bp.track_order_search') }}">
+                            <i class="bi bi-crosshair text-warning me-1"></i><span>Track Order</span>
                         </a>
                     </li>
                 </ul>
             </div>
 
             <!-- Desktop Action Buttons -->
-            <div class="d-none d-lg-flex align-items-center gap-2">
-                <button class="btn btn-royal-gold px-3 py-2 rounded-pill d-flex align-items-center gap-2" type="button" data-bs-toggle="offcanvas" data-bs-target="#cartOffcanvas">
+            <div class="d-none d-xl-flex align-items-center gap-2">
+                <button class="btn btn-royal-gold px-3 py-2 rounded-pill d-inline-flex align-items-center gap-2 text-nowrap flex-shrink-0" type="button" data-bs-toggle="offcanvas" data-bs-target="#cartOffcanvas">
                     <i class="bi bi-bag-fill fs-6"></i>
-                    <span>Your Order</span>
+                    <span class="text-nowrap fw-bold">Your Order</span>
                     <span class="cart-count-badge badge bg-danger rounded-pill">0</span>
                 </button>
             </div>

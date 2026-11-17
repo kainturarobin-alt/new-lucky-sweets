@@ -41,6 +41,8 @@ h1, h2, h3, h4, .royal-heading {
     background: linear-gradient(135deg, var(--royal-maroon-dark) 0%, var(--royal-maroon) 100%);
     border-bottom: 2px solid var(--royal-gold);
     box-shadow: 0 4px 20px rgba(46, 4, 19, 0.35);
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
 }
 
 .royal-brand-title {
@@ -48,24 +50,72 @@ h1, h2, h3, h4, .royal-heading {
     font-weight: 700;
     color: #ffffff !important;
     text-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+    white-space: nowrap !important;
 }
 
 .royal-brand-gold {
     color: var(--royal-gold-light) !important;
 }
 
+.royal-navbar .navbar-nav {
+    flex-wrap: nowrap !important;
+}
+
 .royal-nav-link {
     color: #f7f1e5 !important;
     font-weight: 500;
-    font-size: 0.95rem;
-    padding: 0.5rem 0.85rem !important;
+    font-size: 0.92rem;
+    padding: 0.45rem 0.75rem !important;
     transition: all 0.2s ease;
     border-radius: 8px;
+    white-space: nowrap !important;
+    display: inline-flex !important;
+    align-items: center;
+    gap: 0.35rem;
 }
 
 .royal-nav-link:hover, .royal-nav-link.active {
     color: var(--royal-gold-light) !important;
-    background: rgba(201, 154, 44, 0.15);
+    background: rgba(201, 154, 44, 0.18);
+}
+
+.btn-royal-gold {
+    white-space: nowrap !important;
+}
+
+/* Mobile & Tablet Navbar Dropdown (< 1200px) */
+@media (max-width: 1199.98px) {
+    .royal-navbar .navbar-collapse {
+        background: #360516;
+        border: 1px solid var(--royal-gold);
+        border-radius: 16px;
+        padding: 0.75rem;
+        margin-top: 0.75rem;
+        box-shadow: 0 12px 35px rgba(0, 0, 0, 0.5);
+    }
+    
+    .royal-navbar .navbar-nav {
+        flex-direction: column !important;
+        gap: 0.35rem !important;
+    }
+    
+    .royal-navbar .navbar-nav .nav-item {
+        width: 100%;
+    }
+    
+    .royal-nav-link {
+        width: 100%;
+        display: flex !important;
+        align-items: center;
+        padding: 0.75rem 1rem !important;
+        font-size: 1rem;
+        border-bottom: 1px solid rgba(201, 154, 44, 0.12);
+        border-radius: 10px;
+    }
+    
+    .royal-navbar .navbar-nav .nav-item:last-child .royal-nav-link {
+        border-bottom: none;
+    }
 }
 
 /* Royal Hero Banner */
