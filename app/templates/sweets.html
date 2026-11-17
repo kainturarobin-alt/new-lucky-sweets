@@ -1,0 +1,170 @@
+{% extends 'base.html' %}
+{% block title %}न्यू लकी स्वीट्स व डेयरी - ताज़ा मिठाई व शुद्ध डेयरी उत्पाद{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+
+    <!-- Header Banner -->
+    <div class="p-4 p-md-5 rounded-4 mb-4 text-white position-relative overflow-hidden" 
+         style="background: linear-gradient(135deg, var(--royal-maroon-dark) 0%, var(--royal-maroon) 100%); border: 1.5px solid var(--royal-gold);">
+        <div class="row align-items-center">
+            <div class="col-md-8">
+                <span class="badge royal-badge-gold px-3 py-1 rounded-pill mb-2">100% शुद्ध देशी घी व ताज़ा मावा</span>
+                <h2 class="display-6 fw-bold royal-heading text-white mb-2">न्यू लकी स्वीट्स एंड डेयरी</h2>
+                <p class="text-white-50 mb-3" style="max-width: 600px;">
+                    पारंपरिक विधि से निर्मित शुद्ध देशी घी की मिठाइयाँ, सुबह का ताज़ा मलाई पनीर, दूध, दही, मशहूर कुरकुरा समोसा व शादी-त्यौहार के स्पेशल गिफ्ट बॉक्स।
+                </p>
+                <div class="d-flex gap-2">
+                    <button class="btn btn-royal-gold rounded-pill px-4" data-bs-toggle="offcanvas" data-bs-target="#cartOffcanvas">
+                        <i class="bi bi-receipt me-1"></i> पर्ची देखें (<span class="cart-count-badge">0</span>)
+                    </button>
+                    <a href="https://wa.me/919412153429?text=Namaste!%20Mujhe%20Mithai%20aur%20Dairy%20order%20karni%20hai" target="_blank" class="btn btn-royal-outline rounded-pill px-4">
+                        <i class="bi bi-whatsapp me-1"></i> डायरेक्ट WhatsApp चैट
+                    </a>
+                </div>
+            </div>
+            <div class="col-md-4 text-md-end mt-4 mt-md-0 d-none d-md-block">
+                <i class="bi bi-basket2-fill text-warning" style="font-size: 5rem; opacity: 0.3;"></i>
+            </div>
+        </div>
+    </div>
+
+    <!-- Category Filter Tabs -->
+    <div class="d-flex gap-2 overflow-x-auto pb-2 mb-4 scrollbar-none">
+        <button class="btn btn-sm btn-dark rounded-pill px-3 filter-btn active" data-cat="all">
+            सभी उत्पाद (All)
+        </button>
+        {% for cat in categories %}
+        <button class="btn btn-sm btn-outline-dark rounded-pill px-3 filter-btn" data-cat="cat-{{ cat.id }}">
+            <i class="bi {{ cat.icon }} me-1 text-warning"></i> {{ cat.name_hindi or cat.name }}
+        </button>
+        {% endfor %}
+    </div>
+
+    <!-- Items Grid -->
+    <div class="row g-3" id="sweetsItemsGrid">
+        {% for item in items %}
+        <div class="col-md-6 col-lg-4 item-card-wrapper cat-{{ item.category_id }}">
+            <div class="royal-menu-card p-3 h-100 d-flex flex-column shadow-sm">
+                <div class="position-relative mb-3">
+                    <img src="{{ item.image_url }}" alt="{{ item.name }}" class="royal-item-img rounded-3">
+                    <span class="position-absolute top-0 start-0 m-2 badge bg-success text-white">
+                        <i class="bi bi-check-circle-fill"></i> शुद्ध शाकाहारी
+                    </span>
+                    {% if item.is_popular %}
+                    <span class="position-absolute top-0 end-0 m-2 badge royal-badge-gold">
+                        ⭐ बेस्ट सेलर
+                    </span>
+                    {% endif %}
+                </div>
+                
+                <div class="flex-grow-1">
+                    <div class="d-flex justify-content-between align-items-start mb-1">
+                        <h5 class="fw-bold text-dark mb-0">{{ item.name }}</h5>
+                    </div>
+                    <small class="text-secondary fw-semibold d-block mb-2">{{ item.name_hindi }}</small>
+                    <p class="small text-muted mb-3">{{ item.description }}</p>
+                </div>
+
+                <!-- Weight / Qty Selector for Sweets/Dairy -->
+                <div class="p-2 mb-3 rounded-3 bg-light border">
+                    <div class="d-flex justify-content-between align-items-center mb-1">
+                        <span class="small text-muted fw-bold">मात्रा चुनें (Quantity):</span>
+                        <span class="fw-bold" style="color: var(--royal-maroon);" id="calc-price-{{ item.id }}">
+                            ₹{{ "%.0f"|format(item.price) }}
+                        </span>
+                    </div>
+                    {% if item.unit == 'kg' %}
+                    <div class="btn-group btn-group-sm w-100" role="group">
+                        <input type="radio" class="btn-check" name="qty-opt-{{ item.id }}" id="q1-{{ item.id }}" 
+                               onchange="updateCardPrice({{ item.id }}, {{ item.price }}, 0.25, 'kg')">
+                        <label class="btn btn-outline-secondary" for="q1-{{ item.id }}">250g</label>
+
+                        <input type="radio" class="btn-check" name="qty-opt-{{ item.id }}" id="q2-{{ item.id }}" 
+                               onchange="updateCardPrice({{ item.id }}, {{ item.price }}, 0.5, 'kg')">
+                        <label class="btn btn-outline-secondary" for="q2-{{ item.id }}">500g</label>
+
+                        <input type="radio" class="btn-check" name="qty-opt-{{ item.id }}" id="q3-{{ item.id }}" checked 
+                               onchange="updateCardPrice({{ item.id }}, {{ item.price }}, 1.0, 'kg')">
+                        <label class="btn btn-outline-secondary" for="q3-{{ item.id }}">1 Kg</label>
+                    </div>
+                    {% else %}
+                    <div class="input-group input-group-sm">
+                        <button class="btn btn-outline-secondary" onclick="stepItemQty({{ item.id }}, {{ item.price }}, -1, '{{ item.unit }}')">-</button>
+                        <input type="text" id="unit-val-{{ item.id }}" class="form-control text-center fw-bold bg-white" value="1" readonly>
+                        <button class="btn btn-outline-secondary" onclick="stepItemQty({{ item.id }}, {{ item.price }}, 1, '{{ item.unit }}')">+</button>
+                        <span class="input-group-text bg-light text-muted">{{ item.unit }}</span>
+                    </div>
+                    {% endif %}
+                </div>
+
+                <!-- Add to Cart CTA -->
+                <button class="btn btn-royal-gold w-100 rounded-pill py-2 fw-bold" 
+                        onclick="addCardItemToCart({{ item.id }}, '{{ item.name }}', {{ item.price }}, '{{ item.unit }}', '{{ item.image_url }}')">
+                    <i class="bi bi-cart-plus me-1"></i> पर्ची में जोड़ें
+                </button>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+</div>
+
+<script>
+    // State for cards qty
+    const cardSelections = {};
+
+    function updateCardPrice(itemId, basePrice, qty, unit) {
+        cardSelections[itemId] = { qty: qty, unit: unit, price: basePrice };
+        const priceEl = document.getElementById(`calc-price-${itemId}`);
+        if (priceEl) {
+            priceEl.innerText = `₹${(basePrice * qty).toFixed(0)}`;
+        }
+    }
+
+    function stepItemQty(itemId, basePrice, step, unit) {
+        const input = document.getElementById(`unit-val-${itemId}`);
+        let current = parseInt(input.value) || 1;
+        current = Math.max(1, current + step);
+        input.value = current;
+        cardSelections[itemId] = { qty: current, unit: unit, price: basePrice };
+        const priceEl = document.getElementById(`calc-price-${itemId}`);
+        if (priceEl) {
+            priceEl.innerText = `₹${(basePrice * current).toFixed(0)}`;
+        }
+    }
+
+    function addCardItemToCart(itemId, name, basePrice, defaultUnit, img) {
+        const sel = cardSelections[itemId] || { qty: 1, unit: defaultUnit, price: basePrice };
+        RoyalCart.addItem({
+            id: itemId,
+            name: name,
+            price: basePrice,
+            unit: sel.unit,
+            quantity: sel.qty,
+            image_url: img
+        });
+    }
+
+    // Category Filter Pills
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('.filter-btn').forEach(b => {
+                b.classList.remove('active', 'btn-dark');
+                b.classList.add('btn-outline-dark');
+            });
+            btn.classList.add('active', 'btn-dark');
+            btn.classList.remove('btn-outline-dark');
+
+            const cat = btn.getAttribute('data-cat');
+            document.querySelectorAll('.item-card-wrapper').forEach(card => {
+                if (cat === 'all' || card.classList.contains(cat)) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        });
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,113 @@
+{% extends 'base.html' %}
+{% block title %}डिजिटल पर्ची - {{ order.order_number }}{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-md-7 col-lg-6">
+            <!-- Digital Parchi Card -->
+            <div class="card p-4 rounded-4 shadow border bg-white position-relative" id="parchiPrintable" style="border-top: 4px solid var(--royal-gold) !important;">
+                
+                <!-- Shop Header -->
+                <div class="text-center pb-3 border-bottom mb-3">
+                    <div class="d-inline-flex align-items-center justify-content-center rounded-circle mb-2" style="width: 48px; height: 48px; background: linear-gradient(135deg, #d4af37, #9e7518);">
+                        <i class="bi bi-crown-fill text-dark fs-4"></i>
+                    </div>
+                    <h4 class="royal-heading mb-0 text-dark">NEW LUCKY</h4>
+                    <p class="small text-secondary mb-1">New Lucky Sweets & Dairy • New Lucky Family Restaurant • New Lucky Residency</p>
+                    <small class="text-muted d-block">मियावाला चौक, रायपुर रोड, देहरादून • +91 94121 53429</small>
+                </div>
+
+                <!-- Order Meta -->
+                <div class="d-flex justify-content-between align-items-center small mb-2 text-secondary">
+                    <span><strong>पर्ची क्र.:</strong> {{ order.order_number }}</span>
+                    <span><strong>दिनांक:</strong> {{ order.created_at.strftime('%d-%m-%Y %I:%M %p') }}</span>
+                </div>
+                <div class="d-flex justify-content-between align-items-center small mb-3 text-secondary pb-2 border-bottom">
+                    <span><strong>ग्राहक:</strong> {{ order.customer_name }}</span>
+                    <span><strong>मो.:</strong> {{ order.customer_phone or 'N/A' }}</span>
+                </div>
+
+                {% if order.table_or_room %}
+                <div class="alert alert-warning py-1 px-3 small fw-bold mb-3">
+                    📍 टेबल / रूम: {{ order.table_or_room }} ({{ order.order_type.capitalize() }})
+                </div>
+                {% endif %}
+
+                <!-- Items Table -->
+                <div class="table-responsive mb-3">
+                    <table class="table table-sm table-borderless align-middle mb-0">
+                        <thead class="border-bottom text-muted small">
+                            <tr>
+                                <th>आइटम विवरण</th>
+                                <th class="text-center">मात्रा</th>
+                                <th class="text-end">मूल्य</th>
+                                <th class="text-end">कुल योग</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in order.items %}
+                            <tr class="border-bottom">
+                                <td class="py-2">
+                                    <strong class="text-dark">{{ item.item_name }}</strong>
+                                </td>
+                                <td class="text-center text-secondary small">
+                                    {{ item.quantity }} {{ item.unit }}
+                                </td>
+                                <td class="text-end text-secondary small">
+                                    ₹{{ "%.0f"|format(item.price) }}
+                                </td>
+                                <td class="text-end fw-bold text-dark">
+                                    ₹{{ "%.0f"|format(item.total) }}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Grand Total -->
+                <div class="p-3 rounded-3 bg-light border mb-4">
+                    <div class="d-flex justify-content-between align-items-center mb-1">
+                        <span class="text-secondary small">कुल राशि (Subtotal):</span>
+                        <span class="fw-bold text-dark">₹{{ "%.0f"|format(order.total_amount) }}</span>
+                    </div>
+                    {% if order.discount > 0 %}
+                    <div class="d-flex justify-content-between align-items-center mb-1 text-success small">
+                        <span>छूट (Discount):</span>
+                        <span>- ₹{{ "%.0f"|format(order.discount) }}</span>
+                    </div>
+                    {% endif %}
+                    <div class="d-flex justify-content-between align-items-center pt-2 border-top">
+                        <span class="fs-5 fw-bold text-dark">कुल देय (Total):</span>
+                        <span class="fs-4 fw-bold" style="color: var(--royal-maroon);">₹{{ "%.0f"|format(order.final_amount) }}</span>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center mt-2 small text-muted">
+                        <span>भुगतान माध्यम: <strong>{{ order.payment_mode }}</strong></span>
+                        <span class="badge {% if order.payment_status == 'Paid' %}bg-success{% else %}bg-warning text-dark{% endif %}">
+                            {{ order.payment_status }}
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Footer Note -->
+                <div class="text-center small text-muted">
+                    <p class="mb-1 fw-bold text-dark">पधारने के लिए धन्यवाद! आपका दिन शुभ हो।</p>
+                    <p class="mb-0" style="font-size: 0.75rem;">100% शुद्धता व स्वाद की गारंटी • न्यू लकी ग्रुप देहरादून</p>
+                </div>
+
+                <!-- Print & Share Actions (Hidden when printing) -->
+                <div class="mt-4 d-grid gap-2 d-print-none">
+                    <button class="btn btn-royal-gold rounded-pill py-2 fw-bold" onclick="window.print()">
+                        <i class="bi bi-printer-fill me-1"></i> पर्ची प्रिंट करें
+                    </button>
+                    <a href="{{ url_for('public_bp.index') }}" class="btn btn-outline-secondary rounded-pill py-2">
+                        <i class="bi bi-arrow-left me-1"></i> होम पेज पर वापस जाएं
+                    </a>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

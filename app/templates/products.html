@@ -1,0 +1,229 @@
+{% extends 'base.html' %}
+{% block title %}Products - New Lucky Sweets & Dairy{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+
+    <!-- Header Banner -->
+    <div class="p-4 p-md-5 rounded-4 mb-4 text-white position-relative overflow-hidden" 
+         style="background: linear-gradient(135deg, var(--royal-maroon-dark) 0%, var(--royal-maroon) 100%); border: 1.5px solid var(--royal-gold);">
+        <div class="row align-items-center">
+            <div class="col-md-8">
+                <span class="badge royal-badge-gold px-3 py-1 rounded-pill mb-2">100% Pure Desi Ghee & Farm Fresh Dairy</span>
+                <h2 class="display-6 fw-bold royal-heading text-white mb-2">New Lucky Sweets & Dairy</h2>
+                <p class="text-white-50 mb-3" style="max-width: 600px;">
+                    Handcrafted traditional Indian sweets, daily morning fresh malai paneer, pure milk, thick curd, crispy live-counter samosas, and festive celebration gift boxes. Place your order online for quick counter pickup or delivery.
+                </p>
+                <div class="d-flex flex-wrap gap-2">
+                    <button class="btn btn-royal-gold rounded-pill px-4 fw-bold" data-bs-toggle="offcanvas" data-bs-target="#cartOffcanvas">
+                        <i class="bi bi-bag-check-fill me-1"></i> View Order (<span class="cart-count-badge">0</span>)
+                    </button>
+                    <a href="https://wa.me/919412153429?text=Hello!%20I%20would%20like%20to%20inquire%20about%20ordering%20sweets%20and%20dairy" target="_blank" class="btn btn-royal-outline rounded-pill px-4">
+                        <i class="bi bi-whatsapp me-1"></i> Direct WhatsApp Inquiry
+                    </a>
+                </div>
+            </div>
+            <div class="col-md-4 text-md-end mt-4 mt-md-0 d-none d-md-block">
+                <i class="bi bi-basket2-fill text-warning" style="font-size: 5rem; opacity: 0.3;"></i>
+            </div>
+        </div>
+    </div>
+
+    <!-- Category Filter Tabs -->
+    <div class="d-flex gap-2 overflow-x-auto pb-2 mb-4 scrollbar-none">
+        <button class="btn btn-sm btn-dark rounded-pill px-3 filter-btn active" data-cat="all">
+            All Products
+        </button>
+        {% for cat in categories %}
+        <button class="btn btn-sm btn-outline-dark rounded-pill px-3 filter-btn" data-cat="cat-{{ cat.id }}">
+            <i class="bi {{ cat.icon }} me-1 text-warning"></i> {{ cat.name }}
+        </button>
+        {% endfor %}
+    </div>
+
+    <!-- Products Grid -->
+    <div class="row g-3" id="productsItemsGrid">
+        {% for item in items %}
+        <div class="col-md-6 col-lg-4 item-card-wrapper cat-{{ item.category_id }}">
+            <div class="royal-menu-card p-3 h-100 d-flex flex-column shadow-sm">
+                <div class="position-relative mb-3">
+                    <img src="{{ item.image_url }}" alt="{{ item.name }}" class="royal-item-img rounded-3">
+                    <span class="position-absolute top-0 start-0 m-2 badge bg-success text-white">
+                        <i class="bi bi-check-circle-fill"></i> 100% Vegetarian
+                    </span>
+                    {% if item.is_popular %}
+                    <span class="position-absolute top-0 end-0 m-2 badge royal-badge-gold">
+                        ⭐ Best Seller
+                    </span>
+                    {% endif %}
+                </div>
+                
+                <div class="flex-grow-1">
+                    <h5 class="fw-bold text-dark mb-1">{{ item.name }}</h5>
+                    <p class="small text-muted mb-3">{{ item.description }}</p>
+                </div>
+
+                <!-- Weight / Quantity Selector -->
+                <div class="p-2 mb-3 rounded-3 bg-light border">
+                    <div class="d-flex justify-content-between align-items-center mb-1">
+                        <span class="small text-muted fw-bold">Select Quantity:</span>
+                        <span class="fw-bold fs-6" style="color: var(--royal-maroon);" id="calc-price-{{ item.id }}">
+                            ₹{{ "%.0f"|format(item.price) }}
+                        </span>
+                    </div>
+                    {% if item.unit == 'kg' %}
+                    <div class="btn-group btn-group-sm w-100" role="group">
+                        <input type="radio" class="btn-check" name="qty-opt-{{ item.id }}" id="q1-{{ item.id }}" 
+                               onchange="updateCardPrice({{ item.id }}, {{ item.price }}, 0.25, 'kg')">
+                        <label class="btn btn-outline-secondary" for="q1-{{ item.id }}">250g</label>
+
+                        <input type="radio" class="btn-check" name="qty-opt-{{ item.id }}" id="q2-{{ item.id }}" 
+                               onchange="updateCardPrice({{ item.id }}, {{ item.price }}, 0.5, 'kg')">
+                        <label class="btn btn-outline-secondary" for="q2-{{ item.id }}">500g</label>
+
+                        <input type="radio" class="btn-check" name="qty-opt-{{ item.id }}" id="q3-{{ item.id }}" checked 
+                               onchange="updateCardPrice({{ item.id }}, {{ item.price }}, 1.0, 'kg')">
+                        <label class="btn btn-outline-secondary" for="q3-{{ item.id }}">1 Kg</label>
+                    </div>
+                    {% else %}
+                    <div class="input-group input-group-sm">
+                        <button class="btn btn-outline-secondary" onclick="stepItemQty({{ item.id }}, {{ item.price }}, -1, '{{ item.unit }}')">-</button>
+                        <input type="text" id="unit-val-{{ item.id }}" class="form-control text-center fw-bold bg-white" value="1" readonly>
+                        <button class="btn btn-outline-secondary" onclick="stepItemQty({{ item.id }}, {{ item.price }}, 1, '{{ item.unit }}')">+</button>
+                        <span class="input-group-text bg-light text-muted">{{ item.unit }}</span>
+                    </div>
+                    {% endif %}
+                </div>
+
+                <!-- Direct Action Buttons -->
+                <div class="row g-2">
+                    <div class="col-6">
+                        <button class="btn btn-outline-dark btn-sm w-100 rounded-pill py-2 fw-semibold btn-add-bag" 
+                                onclick="addCardItemToCart(this, {{ item.id }}, '{{ item.name|replace("'", "\\'") }}', {{ item.price }}, '{{ item.unit }}', '{{ item.image_url }}')">
+                            <i class="bi bi-cart-plus me-1"></i> Add to Bag
+                        </button>
+                    </div>
+                    <div class="col-6">
+                        <button class="btn btn-royal-gold btn-sm w-100 rounded-pill py-2 fw-bold" 
+                                onclick="directPlaceOrder({{ item.id }}, '{{ item.name|replace("'", "\\'") }}', {{ item.price }}, '{{ item.unit }}', '{{ item.image_url }}')">
+                            <i class="bi bi-lightning-fill me-1"></i> Place Order
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+</div>
+
+<script>
+    const cardSelections = {};
+
+    function updateCardPrice(itemId, basePrice, qty, unit) {
+        cardSelections[itemId] = { qty: qty, unit: unit, price: basePrice };
+        const priceEl = document.getElementById(`calc-price-${itemId}`);
+        if (priceEl) {
+            priceEl.innerText = `₹${Math.round(basePrice * qty)}`;
+        }
+    }
+
+    function stepItemQty(itemId, basePrice, step, unit) {
+        const input = document.getElementById(`unit-val-${itemId}`);
+        let current = parseInt(input.value) || 1;
+        current = Math.max(1, current + step);
+        input.value = current;
+        cardSelections[itemId] = { qty: current, unit: unit, price: basePrice };
+        const priceEl = document.getElementById(`calc-price-${itemId}`);
+        if (priceEl) {
+            priceEl.innerText = `₹${Math.round(basePrice * current)}`;
+        }
+    }
+
+    function getCardSelection(itemId, defaultUnit, basePrice) {
+        if (defaultUnit === 'kg') {
+            const q1 = document.getElementById(`q1-${itemId}`);
+            const q2 = document.getElementById(`q2-${itemId}`);
+            if (q1 && q1.checked) return { qty: 0.25, unit: 'kg', price: basePrice };
+            if (q2 && q2.checked) return { qty: 0.5, unit: 'kg', price: basePrice };
+            return { qty: 1.0, unit: 'kg', price: basePrice };
+        } else {
+            const inputEl = document.getElementById(`unit-val-${itemId}`);
+            const val = inputEl ? (parseInt(inputEl.value) || 1) : 1;
+            return { qty: val, unit: defaultUnit, price: basePrice };
+        }
+    }
+
+    function addCardItemToCart(btnEl, itemId, name, basePrice, defaultUnit, img) {
+        const sel = getCardSelection(itemId, defaultUnit, basePrice);
+        
+        if (window.RoyalCart) {
+            RoyalCart.addItem({
+                id: itemId,
+                name: name,
+                price: basePrice,
+                unit: sel.unit,
+                quantity: sel.qty,
+                image_url: img
+            }, true);
+        }
+
+        // Instant visual button feedback
+        if (btnEl) {
+            const originalHtml = btnEl.innerHTML;
+            btnEl.classList.remove('btn-outline-dark');
+            btnEl.classList.add('btn-success', 'text-white');
+            btnEl.innerHTML = `<i class="bi bi-check2-circle me-1"></i> Added!`;
+            btnEl.disabled = true;
+            setTimeout(() => {
+                btnEl.classList.remove('btn-success', 'text-white');
+                btnEl.classList.add('btn-outline-dark');
+                btnEl.innerHTML = originalHtml;
+                btnEl.disabled = false;
+            }, 1200);
+        }
+    }
+
+    function directPlaceOrder(itemId, name, basePrice, defaultUnit, img) {
+        const sel = getCardSelection(itemId, defaultUnit, basePrice);
+        if (window.RoyalCart) {
+            RoyalCart.addItem({
+                id: itemId,
+                name: name,
+                price: basePrice,
+                unit: sel.unit,
+                quantity: sel.qty,
+                image_url: img
+            }, false); // don't open drawer, open checkout modal directly!
+        }
+        
+        // Open checkout modal directly
+        const modalEl = document.getElementById('checkoutModal');
+        if (modalEl && window.bootstrap) {
+            const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
+            modal.show();
+        }
+    }
+
+    // Category Filter Pills
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('.filter-btn').forEach(b => {
+                b.classList.remove('active', 'btn-dark');
+                b.classList.add('btn-outline-dark');
+            });
+            btn.classList.add('active', 'btn-dark');
+            btn.classList.remove('btn-outline-dark');
+
+            const cat = btn.getAttribute('data-cat');
+            document.querySelectorAll('.item-card-wrapper').forEach(card => {
+                if (cat === 'all' || card.classList.contains(cat)) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        });
+    });
+</script>
+{% endblock %}

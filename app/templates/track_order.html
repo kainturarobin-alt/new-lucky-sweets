@@ -1,0 +1,161 @@
+{% extends 'base.html' %}
+{% block title %}Track Your Order - New Lucky{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+
+    <!-- Search Section -->
+    <div class="row justify-content-center mb-4">
+        <div class="col-md-7 col-lg-6">
+            <div class="card p-4 rounded-4 shadow-sm border bg-white text-center" style="border-top: 4px solid var(--royal-gold) !important;">
+                <span class="badge royal-badge px-3 py-1 rounded-pill mb-2">Live Order Status</span>
+                <h4 class="royal-heading mb-2 text-dark">Track Your Order</h4>
+                <p class="small text-muted mb-3">Enter your Order Reference Number (e.g. NL-261117-E43D) to check real-time progress.</p>
+                
+                <form action="{{ url_for('public_bp.track_order_search') }}" method="POST">
+                    <div class="input-group mb-3">
+                        <span class="input-group-text bg-light"><i class="bi bi-search text-warning"></i></span>
+                        <input type="text" name="order_number" class="form-control" placeholder="Enter Order No. (e.g. NL-261117-...)" value="{{ searched_number or '' }}" required autofocus>
+                        <button type="submit" class="btn btn-royal-gold px-4 fw-bold">Track</button>
+                    </div>
+                </form>
+
+                {% if searched_number and not order %}
+                <div class="alert alert-warning py-2 small mb-0">
+                    <i class="bi bi-exclamation-triangle me-1"></i> No order found with reference <strong>{{ searched_number }}</strong>. Please check and try again.
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Live Order Details & Stepper -->
+    {% if order %}
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-7">
+            <div class="card p-4 rounded-4 shadow border bg-white mb-4">
+                
+                <div class="d-flex flex-wrap justify-content-between align-items-center pb-3 border-bottom mb-4">
+                    <div>
+                        <span class="badge bg-light text-dark border mb-1">
+                            {% if order.wing == 'sweets' %}New Lucky Sweets & Dairy
+                            {% elif order.wing == 'restaurant' %}New Lucky Family Restaurant
+                            {% else %}New Lucky Residency{% endif %}
+                        </span>
+                        <h4 class="royal-heading text-dark mb-0">{{ order.order_number }}</h4>
+                        <small class="text-muted">Placed on: {{ order.created_at.strftime('%d %B %Y, %I:%M %p') }}</small>
+                    </div>
+                    <div class="text-end mt-2 mt-md-0">
+                        <span class="badge fs-6 px-3 py-2 rounded-pill 
+                            {% if order.status == 'completed' %}bg-success
+                            {% elif order.status == 'ready' %}bg-primary
+                            {% elif order.status == 'preparing' %}bg-warning text-dark
+                            {% elif order.status == 'cancelled' %}bg-danger
+                            {% else %}bg-secondary{% endif %}">
+                            <i class="bi bi-clock-history me-1"></i> {{ order.status.capitalize() }}
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Visual Step Progress Bar -->
+                <div class="mb-4 py-3 px-2 bg-light rounded-4 border">
+                    <div class="d-flex justify-content-between position-relative">
+                        <!-- Step 1: Received -->
+                        <div class="text-center" style="width: 25%;">
+                            <div class="rounded-circle d-flex align-items-center justify-content-center mx-auto mb-1 fw-bold text-white bg-success" style="width: 40px; height: 40px;">
+                                <i class="bi bi-check-lg"></i>
+                            </div>
+                            <small class="fw-bold d-block text-dark" style="font-size: 0.75rem;">Received</small>
+                            <span class="text-muted" style="font-size: 0.65rem;">Logged in system</span>
+                        </div>
+
+                        <!-- Step 2: Preparing -->
+                        <div class="text-center" style="width: 25%;">
+                            <div class="rounded-circle d-flex align-items-center justify-content-center mx-auto mb-1 fw-bold 
+                                {% if order.status in ['preparing', 'ready', 'completed'] %}bg-success text-white{% else %}bg-secondary-subtle text-secondary{% endif %}" 
+                                style="width: 40px; height: 40px;">
+                                {% if order.status in ['preparing', 'ready', 'completed'] %}<i class="bi bi-fire"></i>{% else %}2{% endif %}
+                            </div>
+                            <small class="fw-bold d-block text-dark" style="font-size: 0.75rem;">Preparing</small>
+                            <span class="text-muted" style="font-size: 0.65rem;">Fresh packing/cooking</span>
+                        </div>
+
+                        <!-- Step 3: Ready -->
+                        <div class="text-center" style="width: 25%;">
+                            <div class="rounded-circle d-flex align-items-center justify-content-center mx-auto mb-1 fw-bold 
+                                {% if order.status in ['ready', 'completed'] %}bg-success text-white{% else %}bg-secondary-subtle text-secondary{% endif %}" 
+                                style="width: 40px; height: 40px;">
+                                {% if order.status in ['ready', 'completed'] %}<i class="bi bi-box-seam"></i>{% else %}3{% endif %}
+                            </div>
+                            <small class="fw-bold d-block text-dark" style="font-size: 0.75rem;">Ready</small>
+                            <span class="text-muted" style="font-size: 0.65rem;">Pickup / Delivery</span>
+                        </div>
+
+                        <!-- Step 4: Completed -->
+                        <div class="text-center" style="width: 25%;">
+                            <div class="rounded-circle d-flex align-items-center justify-content-center mx-auto mb-1 fw-bold 
+                                {% if order.status == 'completed' %}bg-success text-white{% else %}bg-secondary-subtle text-secondary{% endif %}" 
+                                style="width: 40px; height: 40px;">
+                                {% if order.status == 'completed' %}<i class="bi bi-flag-fill"></i>{% else %}4{% endif %}
+                            </div>
+                            <small class="fw-bold d-block text-dark" style="font-size: 0.75rem;">Completed</small>
+                            <span class="text-muted" style="font-size: 0.65rem;">Handed over</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Customer Details & Order Items -->
+                <div class="mb-3">
+                    <h6 class="fw-bold text-dark mb-2">Order Summary</h6>
+                    <div class="p-3 bg-light rounded-3 border">
+                        <div class="d-flex justify-content-between small text-secondary mb-1">
+                            <span>Customer: <strong>{{ order.customer_name }}</strong></span>
+                            <span>Phone: <strong>{{ order.customer_phone }}</strong></span>
+                        </div>
+                        <div class="d-flex justify-content-between small text-secondary mb-2">
+                            <span>Type: <strong>{{ order.order_type.capitalize() }}</strong></span>
+                            {% if order.table_or_room %}
+                            <span>Location: <strong>{{ order.table_or_room }}</strong></span>
+                            {% endif %}
+                        </div>
+
+                        <hr class="my-2">
+
+                        <div class="table-responsive">
+                            <table class="table table-sm table-borderless align-middle mb-0 small">
+                                <tbody>
+                                    {% for item in order.items %}
+                                    <tr>
+                                        <td><strong>{{ item.item_name }}</strong></td>
+                                        <td class="text-center text-muted">{{ item.quantity }} {{ item.unit }}</td>
+                                        <td class="text-end fw-bold">₹{{ "%.0f"|format(item.total) }}</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="d-flex justify-content-between align-items-center pt-2 border-top mt-2">
+                            <span class="fw-bold text-dark">Total Bill:</span>
+                            <span class="fs-5 fw-bold" style="color: var(--royal-maroon);">₹{{ "%.0f"|format(order.final_amount) }}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Actions -->
+                <div class="d-flex flex-wrap gap-2 justify-content-between align-items-center pt-2">
+                    <a href="{{ url_for('public_bp.order_detail', order_number=order.order_number) }}" class="btn btn-outline-dark rounded-pill btn-sm px-3">
+                        <i class="bi bi-receipt me-1"></i> View Tax Invoice
+                    </a>
+                    <a href="https://wa.me/919412153429?text=Hello!%20Inquiring%20about%20Order%20{{ order.order_number }}" target="_blank" class="btn btn-royal-gold rounded-pill btn-sm px-3 fw-bold">
+                        <i class="bi bi-whatsapp me-1"></i> WhatsApp Support
+                    </a>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+</div>
+{% endblock %}

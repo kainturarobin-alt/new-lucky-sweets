@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+{% block title %}Staff & Management Login - New Lucky{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-5 col-lg-4">
+            <div class="card p-4 rounded-4 shadow border bg-white" style="border-top: 4px solid var(--royal-gold) !important;">
+                <div class="text-center mb-4">
+                    <div class="d-inline-flex align-items-center justify-content-center rounded-circle mb-2" style="width: 52px; height: 52px; background: linear-gradient(135deg, #d4af37, #9e7518);">
+                        <i class="bi bi-shield-lock-fill text-dark fs-3"></i>
+                    </div>
+                    <h4 class="royal-heading mb-1 text-dark">Staff Portal Login</h4>
+                    <p class="small text-muted mb-0">New Lucky Operations Portal</p>
+                </div>
+
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for cat, msg in messages %}
+                    <div class="alert alert-{{ cat }} py-2 small mb-3">{{ msg }}</div>
+                    {% endfor %}
+                {% endif %}
+                {% endwith %}
+
+                <form method="POST">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold small text-dark">Username</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light"><i class="bi bi-person"></i></span>
+                            <input type="text" name="username" class="form-control" placeholder="e.g. admin" required autofocus>
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label fw-bold small text-dark">Password</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light"><i class="bi bi-key"></i></span>
+                            <input type="password" name="password" class="form-control" placeholder="••••••••" required>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-royal-gold w-100 rounded-pill py-2 fw-bold">
+                        <i class="bi bi-box-arrow-in-right me-1"></i> Sign In
+                    </button>
+                </form>
+
+                <div class="mt-4 p-2 rounded-3 bg-light text-center small text-muted border">
+                    <i class="bi bi-info-circle me-1 text-warning"></i> Default Credentials: <strong>admin</strong> / <strong>lucky123</strong>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

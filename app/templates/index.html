@@ -1,0 +1,376 @@
+{% extends 'base.html' %}
+{% block title %}New Lucky Group - Sweets & Dairy • Family Restaurant • Residency{% endblock %}
+
+{% block content %}
+<div class="container py-3 py-md-4">
+
+    <!-- 1. Grand Royal Hero Banner -->
+    <div class="royal-hero-banner text-center mb-4 mb-md-5">
+        <span class="badge royal-badge-gold px-3 py-2 rounded-pill text-uppercase mb-3 fs-6">
+            <i class="bi bi-crown me-1"></i> Dehradun's Premier Taste & Hospitality Destination
+        </span>
+        <h1 class="display-5 fw-bold text-white mb-2 royal-heading">
+            NEW LUCKY GROUP
+        </h1>
+        <p class="text-warning fs-5 fw-semibold mb-3">
+            New Lucky Sweets & Dairy • New Lucky Family Restaurant • New Lucky Residency
+        </p>
+        <p class="text-white-50 mx-auto mb-4" style="max-width: 740px; font-size: 1.05rem;">
+            Serving Miyawala Chowk, Raipur Road, Dehradun. 100% pure Desi Ghee traditional Indian sweets, daily fresh malai paneer & milk, a full-service family dining restaurant, and contemporary deluxe hotel accommodation.
+        </p>
+
+        <!-- Fast Action CTAs -->
+        <div class="d-flex flex-wrap justify-content-center gap-2 mb-3">
+            <a href="{{ url_for('public_bp.products') }}" class="btn btn-royal-gold btn-lg rounded-pill px-4">
+                <i class="bi bi-basket2-fill me-1"></i> Order Sweets & Dairy
+            </a>
+            <a href="{{ url_for('public_bp.restaurant') }}" class="btn btn-royal-outline btn-lg rounded-pill px-4">
+                <i class="bi bi-egg-fried me-1"></i> Dine-in Menu
+            </a>
+            <a href="{{ url_for('public_bp.hotel') }}" class="btn btn-royal-outline btn-lg rounded-pill px-4">
+                <i class="bi bi-building me-1"></i> Book Rooms
+            </a>
+            <a href="{{ url_for('public_bp.track_order_search') }}" class="btn btn-light btn-lg rounded-pill px-4 text-dark border">
+                <i class="bi bi-crosshair text-danger me-1"></i> Track Order
+            </a>
+        </div>
+
+        <div class="d-flex justify-content-center align-items-center gap-3 text-warning small mt-3">
+            <span><i class="bi bi-check-circle-fill text-success me-1"></i> 100% Pure Desi Ghee</span>
+            <span>•</span>
+            <span><i class="bi bi-check-circle-fill text-success me-1"></i> Fresh Morning Dairy</span>
+            <span>•</span>
+            <span><i class="bi bi-check-circle-fill text-success me-1"></i> 769+ Google Reviews</span>
+        </div>
+    </div>
+
+    <!-- 2. KiraanaSmart-style Sideways Snap Carousel (4 Portals) -->
+    <div class="d-flex justify-content-between align-items-center mb-2 px-1">
+        <div>
+            <h4 class="royal-heading mb-0 text-dark" style="color: var(--royal-maroon) !important;">
+                <i class="bi bi-grid-fill text-warning me-2"></i> Our 3 Businesses
+            </h4>
+            <small class="text-muted">Swipe or click to browse each establishment</small>
+        </div>
+        <span class="badge bg-light text-muted border d-flex align-items-center gap-1 font-monospace" style="font-size: 0.8rem;">
+            Swipe <i class="bi bi-arrow-right"></i>
+        </span>
+    </div>
+
+    <div class="royal-snap-carousel mb-5">
+        <!-- Business 1: New Lucky Sweets & Dairy -->
+        <div class="royal-snap-card shadow-sm">
+            <div class="position-relative overflow-hidden">
+                <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Kaju_katli.JPG?width=600" class="wing-card-img" alt="Sweets & Dairy">
+                <span class="position-absolute top-0 end-0 m-2 badge royal-badge-gold">
+                    <i class="bi bi-award-fill"></i> 100% Pure Desi Ghee
+                </span>
+            </div>
+            <div class="p-3">
+                <h5 class="fw-bold royal-heading mb-1 text-dark">New Lucky Sweets & Dairy</h5>
+                <p class="small text-muted mb-3">Pure Kaju Katli, saffron Rasmalai, caramelized Milk Cake, Gulab Jamun, daily fresh Malai Paneer and kulhad Lassi.</p>
+                <div class="d-flex justify-content-between align-items-center">
+                    <span class="small text-success fw-bold"><i class="bi bi-clock"></i> 7 AM – 10 PM</span>
+                    <a href="{{ url_for('public_bp.products') }}" class="btn btn-sm btn-royal-gold rounded-pill px-3">
+                        Place Order <i class="bi bi-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Business 2: New Lucky Family Restaurant -->
+        <div class="royal-snap-card shadow-sm">
+            <div class="position-relative overflow-hidden">
+                <img src="https://commons.wikimedia.org/wiki/Special:FilePath/A_Tipical_Veg_North_Indian_Thali.jpg?width=600" class="wing-card-img" alt="Family Restaurant">
+                <span class="position-absolute top-0 end-0 m-2 badge bg-danger text-white">
+                    <i class="bi bi-fire"></i> Dine-in & Takeaway
+                </span>
+            </div>
+            <div class="p-3">
+                <h5 class="fw-bold royal-heading mb-1 text-dark">New Lucky Family Restaurant</h5>
+                <p class="small text-muted mb-3">Paneer Butter Masala, overnight Dal Makhani, clay-tandoor breads, Chinese fast food and grand Deluxe Thalis.</p>
+                <div class="d-flex justify-content-between align-items-center">
+                    <span class="small text-muted">AC Family Dining</span>
+                    <a href="{{ url_for('public_bp.restaurant') }}" class="btn btn-sm btn-royal-gold rounded-pill px-3">
+                        View Menu <i class="bi bi-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Business 3: New Lucky Residency -->
+        <div class="royal-snap-card shadow-sm">
+            <div class="position-relative overflow-hidden">
+                <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Hotel_Room_with_queen_size_bed.jpg?width=600" class="wing-card-img" alt="Hotel Lucky Residency">
+                <span class="position-absolute top-0 end-0 m-2 badge bg-primary text-white">
+                    <i class="bi bi-building"></i> Deluxe Accommodation
+                </span>
+            </div>
+            <div class="p-3">
+                <h5 class="fw-bold royal-heading mb-1 text-dark">New Lucky Residency</h5>
+                <p class="small text-muted mb-3">Air-conditioned Deluxe & Executive Suites, 24/7 room dining, high-speed Wi-Fi, and safe on-site vehicle parking.</p>
+                <div class="d-flex justify-content-between align-items-center">
+                    <span class="fw-bold text-dark">₹1,599 <small class="text-muted fw-normal">/night</small></span>
+                    <a href="{{ url_for('public_bp.hotel') }}" class="btn btn-sm btn-royal-gold rounded-pill px-3">
+                        Book Room <i class="bi bi-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Portal 4: Live Snacks & Samosa Counter -->
+        <div class="royal-snap-card shadow-sm">
+            <div class="position-relative overflow-hidden">
+                <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Samosa_-_Snack.JPG?width=600" class="wing-card-img" alt="Live Snacks">
+                <span class="position-absolute top-0 end-0 m-2 badge bg-warning text-dark fw-bold">
+                    <i class="bi bi-star-fill"></i> Customer Favorite
+                </span>
+            </div>
+            <div class="p-3">
+                <h5 class="fw-bold royal-heading mb-1 text-dark">Miyawala Famous Samosas</h5>
+                <p class="small text-muted mb-3">Live counter hot crispy samosas stuffed with spiced potatoes & paneer, bakery-fresh patties and Chhole Bhature.</p>
+                <div class="d-flex justify-content-between align-items-center">
+                    <span class="fw-bold text-danger">₹15 <small class="text-muted fw-normal">/pc</small></span>
+                    <a href="{{ url_for('public_bp.products') }}" class="btn btn-sm btn-royal-gold rounded-pill px-3">
+                        Place Order <i class="bi bi-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 3. Popular Best Sellers Showcase -->
+    <div class="mb-5">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <div>
+                <h3 class="royal-heading text-dark mb-0">
+                    <i class="bi bi-award-fill text-warning me-2"></i> Featured Best Sellers
+                </h3>
+                <small class="text-muted">Most loved delicacies, dairy and snack items</small>
+            </div>
+            <a href="{{ url_for('public_bp.products') }}" class="btn btn-outline-dark rounded-pill btn-sm px-3">
+                View All Products <i class="bi bi-arrow-right"></i>
+            </a>
+        </div>
+
+        <div class="row g-3">
+            {% for item in sweets_popular %}
+            <div class="col-md-6 col-lg-4">
+                <div class="royal-menu-card p-3 h-100 d-flex flex-column shadow-sm">
+                    <div class="position-relative mb-3">
+                        <img src="{{ item.image_url }}" alt="{{ item.name }}" class="royal-item-img rounded-3">
+                        <span class="position-absolute top-0 start-0 m-2 badge bg-success text-white">
+                            <i class="bi bi-check-circle"></i> 100% Veg
+                        </span>
+                        {% if item.is_popular %}
+                        <span class="position-absolute top-0 end-0 m-2 badge royal-badge-gold">
+                            Best Seller
+                        </span>
+                        {% endif %}
+                    </div>
+                    <div class="flex-grow-1">
+                        <h5 class="fw-bold text-dark mb-1">{{ item.name }}</h5>
+                        <p class="text-secondary small mb-3">{{ item.description }}</p>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center pt-2 border-top">
+                        <div>
+                            <span class="fs-5 fw-bold" style="color: var(--royal-maroon);">₹{{ "%.0f"|format(item.price) }}</span>
+                            <small class="text-muted">/ {{ item.unit }}</small>
+                        </div>
+                        <button class="btn btn-royal-gold btn-sm rounded-pill px-3 fw-bold" 
+                                onclick="addHomeItem(this, {{ item.id }}, '{{ item.name|replace("'", "\\'") }}', {{ item.price }}, '{{ item.unit }}', '{{ item.image_url }}')">
+                            <i class="bi bi-bag-plus me-1"></i> Place Order
+                        </button>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- 4. New Lucky Residency - Room Preview -->
+    <div class="mb-5 p-4 rounded-4" style="background: linear-gradient(135deg, #f7f1e5 0%, #efe5d3 100%); border: 1.5px solid var(--royal-border);">
+        <div class="d-flex flex-wrap justify-content-between align-items-center mb-4">
+            <div>
+                <span class="badge royal-badge-gold px-3 py-1 rounded-pill mb-2">New Lucky Residency</span>
+                <h3 class="royal-heading text-dark mb-0">Peaceful Stay in Dehradun</h3>
+                <small class="text-muted">Conveniently situated near Harrawala Railway Station & Dehradun Airport Road</small>
+            </div>
+            <a href="{{ url_for('public_bp.hotel') }}" class="btn btn-royal-gold rounded-pill px-4 mt-2 mt-md-0 fw-bold">
+                View All Rooms <i class="bi bi-arrow-right"></i>
+            </a>
+        </div>
+
+        <div class="row g-3">
+            {% for room in hotel_rooms[:3] %}
+            <div class="col-md-4">
+                <div class="royal-room-card h-100 shadow-sm d-flex flex-column">
+                    <img src="{{ room.image_url }}" alt="{{ room.room_type }}" class="royal-item-img">
+                    <div class="p-3 flex-grow-1 d-flex flex-column">
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                            <h5 class="fw-bold mb-0 text-dark">{{ room.room_type }}</h5>
+                            <span class="badge bg-light text-dark border">Room {{ room.room_number }}</span>
+                        </div>
+                        <p class="small text-muted mb-2"><i class="bi bi-building me-1"></i> {{ room.floor }}</p>
+                        <p class="small text-secondary mb-3 flex-grow-1">{{ room.description }}</p>
+                        <div class="d-flex justify-content-between align-items-center pt-2 border-top">
+                            <div>
+                                <span class="fs-5 fw-bold text-dark">₹{{ "%.0f"|format(room.price_per_night) }}</span>
+                                <small class="text-muted">/ night</small>
+                            </div>
+                            <a href="{{ url_for('public_bp.hotel') }}" class="btn btn-sm btn-outline-dark rounded-pill px-3">
+                                Reserve Room
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- 5. Real Google Business Reviews (3.9★ on 769+ Reviews) -->
+    <div class="mb-5">
+        <div class="text-center mb-4">
+            <span class="badge royal-badge px-3 py-2 rounded-pill mb-2">
+                <i class="bi bi-google me-1 text-danger"></i> GOOGLE BUSINESS PROFILE RATING
+            </span>
+            <h3 class="royal-heading text-dark mb-1">Trusted by 760+ Verified Customers</h3>
+            <p class="text-muted">Real guest reviews from travelers and local patrons in Dehradun</p>
+            <div class="d-inline-flex align-items-center gap-2 p-2 px-3 rounded-pill bg-white shadow-sm border">
+                <span class="fs-4 fw-bold text-dark">3.9</span>
+                <div class="text-warning fs-5">
+                    <i class="bi bi-star-fill"></i>
+                    <i class="bi bi-star-fill"></i>
+                    <i class="bi bi-star-fill"></i>
+                    <i class="bi bi-star-fill"></i>
+                    <i class="bi bi-star"></i>
+                </div>
+                <span class="text-secondary small fw-bold">(769 Google Reviews)</span>
+            </div>
+        </div>
+
+        <div class="row g-3">
+            <div class="col-md-4">
+                <div class="card p-4 h-100 border rounded-4 shadow-sm bg-white">
+                    <div class="text-warning mb-2">
+                        <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
+                    </div>
+                    <p class="small text-dark mb-3 fst-italic">
+                        "Their hot crispy samosas at Miyawala Chowk with mint chutney are a must-try. We never pass this route without stopping for samosas and sweet kulhad lassi!"
+                    </p>
+                    <div class="d-flex align-items-center gap-2 mt-auto">
+                        <div class="rounded-circle bg-light d-flex align-items-center justify-content-center fw-bold text-maroon" style="width: 36px; height: 36px;">
+                            AS
+                        </div>
+                        <div>
+                            <h6 class="mb-0 fw-bold small text-dark">Amit Sharma</h6>
+                            <small class="text-muted">Local Guide • Dehradun</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card p-4 h-100 border rounded-4 shadow-sm bg-white">
+                    <div class="text-warning mb-2">
+                        <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
+                    </div>
+                    <p class="small text-dark mb-3 fst-italic">
+                        "We regularly purchase daily fresh paneer and pure milk from here. The paneer is super soft and 100% fresh. The sweets quality is always commendable."
+                    </p>
+                    <div class="d-flex align-items-center gap-2 mt-auto">
+                        <div class="rounded-circle bg-light d-flex align-items-center justify-content-center fw-bold text-maroon" style="width: 36px; height: 36px;">
+                            VR
+                        </div>
+                        <div>
+                            <h6 class="mb-0 fw-bold small text-dark">Vikas Rawat</h6>
+                            <small class="text-muted">Regular Patron • Miyawala</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card p-4 h-100 border rounded-4 shadow-sm bg-white">
+                    <div class="text-warning mb-2">
+                        <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
+                    </div>
+                    <p class="small text-dark mb-3 fst-italic">
+                        "Our stay at New Lucky Residency was very peaceful and comfortable. Rooms are well-sanitized, and having New Lucky Family Restaurant downstairs was super convenient."
+                    </p>
+                    <div class="d-flex align-items-center gap-2 mt-auto">
+                        <div class="rounded-circle bg-light d-flex align-items-center justify-content-center fw-bold text-maroon" style="width: 36px; height: 36px;">
+                            RN
+                        </div>
+                        <div>
+                            <h6 class="mb-0 fw-bold small text-dark">Rohit Negi</h6>
+                            <small class="text-muted">Traveler • Haridwar Highway</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 6. Location & Interactive Map Section -->
+    <div class="card p-4 rounded-4 shadow-sm bg-white border">
+        <div class="row g-4 align-items-center">
+            <div class="col-lg-5">
+                <span class="badge royal-badge px-3 py-1 rounded-pill mb-2">Visit Us</span>
+                <h3 class="royal-heading text-dark mb-2">Easy to Reach Location</h3>
+                <p class="text-secondary small mb-3">
+                    Situated directly at Miyawala Chowk on Raipur Road with convenient front parking for two-wheelers and cars.
+                </p>
+                <div class="d-grid gap-2 small text-dark mb-4">
+                    <div><i class="bi bi-geo-alt-fill text-danger me-2"></i> 737P+6H4, Raipur Rd, Miyanwala, Dehradun 248005</div>
+                    <div><i class="bi bi-telephone-fill text-success me-2"></i> Contact: <a href="tel:+919412153429" class="fw-bold text-dark">+91 94121 53429</a></div>
+                    <div><i class="bi bi-clock-fill text-warning me-2"></i> Hours: 7:00 AM – 10:00 PM (Everyday)</div>
+                </div>
+                <div class="d-flex gap-2">
+                    <a href="https://maps.google.com/?q=New+Lucky+Sweets+And+Dairy+Miyawala+Dehradun" target="_blank" class="btn btn-royal-gold rounded-pill px-4 fw-bold">
+                        <i class="bi bi-cursor-fill me-1"></i> Google Maps Navigation
+                    </a>
+                    <a href="tel:+919412153429" class="btn btn-outline-dark rounded-pill px-3">
+                        <i class="bi bi-telephone-fill me-1"></i> Call Store
+                    </a>
+                </div>
+            </div>
+            <div class="col-lg-7">
+                <div class="rounded-4 overflow-hidden shadow-sm border" style="height: 320px;">
+                    <iframe 
+                        src="https://maps.google.com/maps?q=30.2630198,78.0864435&hl=en&z=16&output=embed" 
+                        width="100%" 
+                        height="100%" 
+                        style="border:0;" 
+                        allowfullscreen="" 
+                        loading="lazy">
+                    </iframe>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    function addHomeItem(btn, id, name, price, unit, img) {
+        if (window.RoyalCart) {
+            RoyalCart.addItem({ id: id, name: name, price: price, unit: unit, quantity: 1, image_url: img }, true);
+        }
+        if (btn) {
+            const orig = btn.innerHTML;
+            btn.classList.remove('btn-royal-gold');
+            btn.classList.add('btn-success', 'text-white');
+            btn.innerHTML = '<i class="bi bi-check2-circle me-1"></i> Added!';
+            btn.disabled = true;
+            setTimeout(() => {
+                btn.classList.remove('btn-success', 'text-white');
+                btn.classList.add('btn-royal-gold');
+                btn.innerHTML = orig;
+                btn.disabled = false;
+            }, 1200);
+        }
+    }
+</script>
+{% endblock %}

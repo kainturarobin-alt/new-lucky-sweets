@@ -1,0 +1,441 @@
+{% extends 'base.html' %}
+{% block title %}Multi-Business POS & Billing Terminal - New Lucky{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-3 pos-screen">
+    <div class="row g-3">
+        
+        <!-- Left Column: 3 Dedicated Business Modes & Items -->
+        <div class="col-lg-7 col-xl-8">
+            <div class="card p-3 rounded-4 shadow-sm border bg-white mb-3">
+                <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+                    <div class="d-flex align-items-center gap-2">
+                        <span class="badge royal-badge-gold fs-6 px-3 py-2 rounded-pill">
+                            <i class="bi bi-calculator me-1"></i> Operations POS
+                        </span>
+                        <h5 class="fw-bold mb-0 text-dark">Multi-Business Billing Terminal</h5>
+                    </div>
+
+                    <!-- 3 Business Selector Tabs -->
+                    <div class="btn-group" role="group">
+                        <button type="button" class="btn btn-sm btn-dark active" id="tabSweets" onclick="setBusinessMode('sweets')">
+                            <i class="bi bi-basket2-fill text-warning me-1"></i> New Lucky Sweets & Dairy
+                        </button>
+                        <button type="button" class="btn btn-sm btn-outline-dark" id="tabRest" onclick="setBusinessMode('restaurant')">
+                            <i class="bi bi-egg-fried text-danger me-1"></i> New Lucky Family Restaurant
+                        </button>
+                        <button type="button" class="btn btn-sm btn-outline-dark" id="tabHotel" onclick="setBusinessMode('hotel')">
+                            <i class="bi bi-building text-primary me-1"></i> New Lucky Residency
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Sub-header Bar for Selected Business Mode -->
+                <div class="p-2 px-3 rounded-3 mb-3 border d-flex justify-content-between align-items-center" id="businessModeBanner" style="background: #faf4e6;">
+                    <div class="small fw-bold text-dark" id="modeBannerText">
+                        🍯 <strong>Mode: New Lucky Sweets & Dairy</strong> (Weight-based & pieces counter billing)
+                    </div>
+                    <div class="d-flex gap-1" id="weightQuickButtons">
+                        <span class="small text-muted me-1 align-self-center">Quick Weight:</span>
+                        <button type="button" class="btn btn-xs btn-outline-secondary py-0 px-2 small" onclick="setPosDefaultWeight(0.1, '100g')">100g</button>
+                        <button type="button" class="btn btn-xs btn-outline-secondary py-0 px-2 small" onclick="setPosDefaultWeight(0.25, '250g')">250g</button>
+                        <button type="button" class="btn btn-xs btn-outline-secondary py-0 px-2 small" onclick="setPosDefaultWeight(0.5, '500g')">500g</button>
+                        <button type="button" class="btn btn-xs btn-dark py-0 px-2 small" onclick="setPosDefaultWeight(1.0, '1 Kg')">1 Kg</button>
+                    </div>
+                </div>
+
+                <!-- Search Input -->
+                <div class="input-group mb-3">
+                    <span class="input-group-text bg-light"><i class="bi bi-search text-muted"></i></span>
+                    <input type="text" id="posSearchInput" class="form-control" placeholder="Search product or dish by name..." onkeyup="filterPosItems()">
+                </div>
+
+                <!-- Products Grid Container -->
+                <div class="row g-2 overflow-y-auto" style="max-height: 480px;" id="posItemsContainer">
+                    
+                    <!-- 1. Sweets & Dairy Items -->
+                    {% for item in sweets_items %}
+                    <div class="col-6 col-md-4 col-xl-3 pos-item-card" data-wing="sweets" data-name="{{ item.name|lower }}">
+                        <div class="card p-2 h-100 border rounded-3 bg-light text-center shadow-sm" 
+                             style="cursor: pointer; transition: all 0.2s;"
+                             onclick="posAddProduct({{ item.id }}, '{{ item.name }}', {{ item.price }}, '{{ item.unit }}')">
+                            <div class="fw-bold text-dark small text-truncate">{{ item.name }}</div>
+                            <div class="mt-2 pt-1 border-top d-flex justify-content-between align-items-center">
+                                <span class="badge bg-white text-dark border">₹{{ "%.0f"|format(item.price) }}/{{ item.unit }}</span>
+                                <span class="btn btn-sm btn-royal-gold p-0 px-2 fw-bold" style="font-size: 0.72rem;">+ Punch</span>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+
+                    <!-- 2. Restaurant Items -->
+                    {% for item in rest_items %}
+                    <div class="col-6 col-md-4 col-xl-3 pos-item-card d-none" data-wing="restaurant" data-name="{{ item.name|lower }}">
+                        <div class="card p-2 h-100 border rounded-3 bg-light text-center shadow-sm" 
+                             style="cursor: pointer; transition: all 0.2s;"
+                             onclick="posAddProduct({{ item.id }}, '{{ item.name }}', {{ item.price }}, '{{ item.unit }}')">
+                            <div class="fw-bold text-dark small text-truncate">{{ item.name }}</div>
+                            <div class="mt-2 pt-1 border-top d-flex justify-content-between align-items-center">
+                                <span class="badge bg-white text-dark border">₹{{ "%.0f"|format(item.price) }}/{{ item.unit }}</span>
+                                <span class="btn btn-sm btn-royal-gold p-0 px-2 fw-bold" style="font-size: 0.72rem;">+ Punch</span>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+
+                    <!-- 3. Hotel Residency Rooms & Folio Services -->
+                    {% for room in hotel_rooms %}
+                    <div class="col-6 col-md-4 col-xl-3 pos-item-card d-none" data-wing="hotel" data-name="room {{ room.room_number }} {{ room.room_type|lower }}">
+                        <div class="card p-2 h-100 border rounded-3 bg-light text-center shadow-sm" 
+                             style="cursor: pointer; transition: all 0.2s;"
+                             onclick="posAddProduct({{ room.id }}, 'Room {{ room.room_number }} - {{ room.room_type }}', {{ room.price_per_night }}, 'night')">
+                            <span class="badge bg-dark text-warning mb-1">Room {{ room.room_number }}</span>
+                            <div class="fw-bold text-dark small text-truncate">{{ room.room_type }}</div>
+                            <div class="mt-2 pt-1 border-top d-flex justify-content-between align-items-center">
+                                <span class="badge bg-white text-dark border">₹{{ "%.0f"|format(room.price_per_night) }}/night</span>
+                                <span class="btn btn-sm btn-royal-gold p-0 px-2 fw-bold" style="font-size: 0.72rem;">+ Tariff</span>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Recent Invoices Table -->
+            <div class="card p-3 rounded-4 shadow-sm border bg-white">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <h6 class="fw-bold text-dark mb-0"><i class="bi bi-clock-history me-1 text-warning"></i> Recent Invoices & Bills</h6>
+                    <a href="{{ url_for('admin_bp.dashboard') }}" class="btn btn-sm btn-outline-secondary py-0 px-2">View All in Admin</a>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-sm table-hover align-middle mb-0 small">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Invoice Ref</th>
+                                <th>Customer</th>
+                                <th>Business</th>
+                                <th>Table/Room</th>
+                                <th>Payment</th>
+                                <th class="text-end">Amount</th>
+                                <th class="text-center">Receipt</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for ord in recent_orders[:6] %}
+                            <tr>
+                                <td><strong>{{ ord.order_number }}</strong></td>
+                                <td>{{ ord.customer_name }}</td>
+                                <td>
+                                    <span class="badge {% if ord.wing == 'sweets' %}bg-warning-subtle text-dark border{% elif ord.wing == 'restaurant' %}bg-danger-subtle text-danger border{% else %}bg-primary-subtle text-primary border{% endif %}">
+                                        {{ ord.wing.capitalize() }}
+                                    </span>
+                                </td>
+                                <td>{{ ord.table_or_room or '-' }}</td>
+                                <td>{{ ord.payment_mode }}</td>
+                                <td class="text-end fw-bold">₹{{ "%.0f"|format(ord.final_amount) }}</td>
+                                <td class="text-center">
+                                    <a href="{{ url_for('public_bp.order_detail', order_number=ord.order_number) }}" target="_blank" class="btn btn-sm btn-outline-secondary py-0 px-2">
+                                        <i class="bi bi-printer"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Column: Live Terminal Cart & Billing Controls -->
+        <div class="col-lg-5 col-xl-4">
+            <div class="pos-cart-panel p-3 rounded-4 sticky-top" style="top: 80px;">
+                <div class="d-flex justify-content-between align-items-center pb-2 border-bottom mb-3">
+                    <h5 class="fw-bold text-dark mb-0"><i class="bi bi-receipt me-1 text-warning"></i> Active Bill Folio</h5>
+                    <button class="btn btn-sm btn-outline-danger" onclick="posClearCart()">
+                        <i class="bi bi-trash"></i> Reset
+                    </button>
+                </div>
+
+                <!-- Customer Details Input -->
+                <div class="row g-2 mb-2">
+                    <div class="col-6">
+                        <input type="text" id="posCustName" class="form-control form-control-sm" placeholder="Customer Name">
+                    </div>
+                    <div class="col-6">
+                        <input type="tel" id="posCustPhone" class="form-control form-control-sm" placeholder="Phone Number">
+                    </div>
+                </div>
+
+                <!-- Specific Location Selector depending on business mode -->
+                <div class="row g-2 mb-3">
+                    <div class="col-6">
+                        <select id="posOrderType" class="form-select form-select-sm">
+                            <option value="takeaway">Counter Pickup</option>
+                            <option value="dine-in">Dine-in</option>
+                            <option value="room_service">Room Service</option>
+                            <option value="delivery">Delivery</option>
+                        </select>
+                    </div>
+                    <div class="col-6" id="locationSelectorWrapper">
+                        <input type="text" id="posTableRoom" class="form-control form-control-sm" placeholder="Table / Room No.">
+                    </div>
+                </div>
+
+                <!-- Cart Items List Container -->
+                <div id="posCartList" class="overflow-y-auto mb-3" style="max-height: 250px; min-height: 140px;">
+                    <div class="text-center text-muted py-4 small">
+                        Cart is empty.<br>Click items on the left to punch.
+                    </div>
+                </div>
+
+                <!-- Calculation Summary -->
+                <div class="p-3 rounded-3 bg-light border mb-3">
+                    <div class="d-flex justify-content-between align-items-center mb-1 small text-secondary">
+                        <span>Subtotal:</span>
+                        <span class="fw-bold text-dark" id="posSubtotal">₹0</span>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center mb-2 small text-secondary">
+                        <span>Discount (₹):</span>
+                        <input type="number" id="posDiscount" class="form-control form-control-sm text-end" value="0" style="width: 80px;" oninput="posCalculateTotal()">
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center pt-2 border-top">
+                        <span class="fs-5 fw-bold text-dark">Total Bill:</span>
+                        <span class="fs-4 fw-bold" style="color: var(--royal-maroon);" id="posFinalTotal">₹0</span>
+                    </div>
+                </div>
+
+                <!-- Payment Methods -->
+                <div class="mb-3">
+                    <label class="form-label small fw-bold text-muted mb-1">Payment Method:</label>
+                    <div class="btn-group btn-group-sm w-100" role="group">
+                        <input type="radio" class="btn-check" name="posPayMode" id="payCash" value="Cash" checked>
+                        <label class="btn btn-outline-success" for="payCash"><i class="bi bi-cash"></i> Cash</label>
+
+                        <input type="radio" class="btn-check" name="posPayMode" id="payUPI" value="UPI (GPay/PhonePe)">
+                        <label class="btn btn-outline-primary" for="payUPI"><i class="bi bi-qr-code"></i> UPI</label>
+
+                        <input type="radio" class="btn-check" name="posPayMode" id="payCard" value="Card">
+                        <label class="btn btn-outline-secondary" for="payCard"><i class="bi bi-credit-card"></i> Card</label>
+
+                        <input type="radio" class="btn-check" name="posPayMode" id="payUdhar" value="Khata (Ledger)">
+                        <label class="btn btn-outline-danger" for="payUdhar"><i class="bi bi-journal"></i> Ledger</label>
+                    </div>
+                </div>
+
+                <!-- Action Button -->
+                <button type="button" id="posCheckoutBtn" class="btn btn-royal-gold w-100 py-3 rounded-pill fw-bold fs-6 shadow" onclick="posProcessCheckout()">
+                    <i class="bi bi-printer-fill me-1"></i> Complete & Print Invoice (F8)
+                </button>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    let posCart = [];
+    let currentBusiness = 'sweets';
+    let currentDefaultWeight = 1.0;
+
+    function setPosDefaultWeight(qty, label) {
+        currentDefaultWeight = qty;
+        document.querySelectorAll('#weightQuickButtons button').forEach(b => {
+            b.classList.remove('btn-dark');
+            b.classList.add('btn-outline-secondary');
+            if (b.innerText === label) {
+                b.classList.add('btn-dark');
+                b.classList.remove('btn-outline-secondary');
+            }
+        });
+    }
+
+    function setBusinessMode(mode) {
+        currentBusiness = mode;
+        const banner = document.getElementById('modeBannerText');
+        const weightQuick = document.getElementById('weightQuickButtons');
+        const orderTypeSelect = document.getElementById('posOrderType');
+        const tableRoomInput = document.getElementById('posTableRoom');
+
+        // Toggle Tab styles
+        ['tabSweets', 'tabRest', 'tabHotel'].forEach(t => {
+            document.getElementById(t).classList.remove('btn-dark', 'active');
+            document.getElementById(t).classList.add('btn-outline-dark');
+        });
+
+        if (mode === 'sweets') {
+            document.getElementById('tabSweets').classList.add('btn-dark', 'active');
+            banner.innerHTML = '🍯 <strong>Mode: New Lucky Sweets & Dairy</strong> (Weight-based & piece billing)';
+            weightQuick.style.display = 'flex';
+            orderTypeSelect.value = 'takeaway';
+            tableRoomInput.placeholder = 'Counter / Pickup';
+        } else if (mode === 'restaurant') {
+            document.getElementById('tabRest').classList.add('btn-dark', 'active');
+            banner.innerHTML = '🍽️ <strong>Mode: New Lucky Family Restaurant</strong> (Dine-in Tables & KOT)';
+            weightQuick.style.display = 'none';
+            orderTypeSelect.value = 'dine-in';
+            tableRoomInput.placeholder = 'e.g. Table 4';
+        } else if (mode === 'hotel') {
+            document.getElementById('tabHotel').classList.add('btn-dark', 'active');
+            banner.innerHTML = '🏨 <strong>Mode: New Lucky Residency</strong> (Room Tariff & Folio Billing)';
+            weightQuick.style.display = 'none';
+            orderTypeSelect.value = 'room_service';
+            tableRoomInput.placeholder = 'e.g. Room 201';
+        }
+
+        filterPosItems();
+    }
+
+    function filterPosItems() {
+        const query = document.getElementById('posSearchInput').value.toLowerCase().trim();
+        document.querySelectorAll('.pos-item-card').forEach(card => {
+            const cardWing = card.getAttribute('data-wing');
+            const cardName = card.getAttribute('data-name');
+            const matchesWing = (cardWing === currentBusiness);
+            const matchesQuery = !query || cardName.includes(query);
+
+            if (matchesWing && matchesQuery) {
+                card.classList.remove('d-none');
+            } else {
+                card.classList.add('d-none');
+            }
+        });
+    }
+
+    function posAddProduct(itemId, name, price, unit) {
+        let qtyToAdd = (unit === 'kg') ? currentDefaultWeight : 1;
+        const existing = posCart.find(i => i.id === itemId && i.unit === unit);
+        if (existing) {
+            existing.qty += qtyToAdd;
+        } else {
+            posCart.push({
+                id: itemId,
+                name: name,
+                price: parseFloat(price),
+                unit: unit,
+                qty: qtyToAdd
+            });
+        }
+        renderPosCart();
+    }
+
+    function posUpdateQty(index, newQty) {
+        if (newQty <= 0) {
+            posCart.splice(index, 1);
+        } else {
+            posCart[index].qty = Math.round(newQty * 100) / 100;
+        }
+        renderPosCart();
+    }
+
+    function posClearCart() {
+        posCart = [];
+        renderPosCart();
+    }
+
+    function renderPosCart() {
+        const container = document.getElementById('posCartList');
+        if (posCart.length === 0) {
+            container.innerHTML = `
+                <div class="text-center text-muted py-4 small">
+                    Cart is empty.<br>Click items on the left to punch.
+                </div>`;
+            posCalculateTotal();
+            return;
+        }
+
+        let html = '';
+        posCart.forEach((item, index) => {
+            const lineTotal = item.price * item.qty;
+            html += `
+            <div class="p-2 mb-2 bg-light rounded-3 border d-flex justify-content-between align-items-center">
+                <div style="max-width: 150px;">
+                    <div class="fw-bold small text-dark text-truncate">${item.name}</div>
+                    <small class="text-muted">₹${item.price.toFixed(0)}/${item.unit}</small>
+                </div>
+                <div class="d-flex align-items-center gap-1">
+                    <button class="btn btn-sm btn-outline-secondary py-0 px-2" onclick="posUpdateQty(${index}, ${item.qty - (item.unit === 'kg' ? 0.25 : 1)})">-</button>
+                    <span class="fw-bold small px-1">${item.qty} ${item.unit}</span>
+                    <button class="btn btn-sm btn-outline-secondary py-0 px-2" onclick="posUpdateQty(${index}, ${item.qty + (item.unit === 'kg' ? 0.25 : 1)})">+</button>
+                </div>
+                <div class="text-end">
+                    <div class="fw-bold text-dark small">₹${lineTotal.toFixed(0)}</div>
+                    <button class="btn btn-link text-danger p-0 border-0" style="font-size: 0.75rem;" onclick="posUpdateQty(${index}, 0)">Remove</button>
+                </div>
+            </div>`;
+        });
+        container.innerHTML = html;
+        posCalculateTotal();
+    }
+
+    function posCalculateTotal() {
+        const subtotal = posCart.reduce((sum, i) => sum + (i.price * i.qty), 0);
+        const discountInput = document.getElementById('posDiscount');
+        const discount = parseFloat(discountInput.value) || 0;
+        const finalTotal = Math.max(0, subtotal - discount);
+
+        document.getElementById('posSubtotal').innerText = `₹${subtotal.toFixed(0)}`;
+        document.getElementById('posFinalTotal').innerText = `₹${finalTotal.toFixed(0)}`;
+    }
+
+    function posProcessCheckout() {
+        if (posCart.length === 0) {
+            alert('Please add at least one item before completing the invoice.');
+            return;
+        }
+
+        const custName = document.getElementById('posCustName').value.trim() || 'Counter Walk-in';
+        const custPhone = document.getElementById('posCustPhone').value.trim();
+        const orderType = document.getElementById('posOrderType').value;
+        const tableRoom = document.getElementById('posTableRoom').value.trim();
+        const discount = parseFloat(document.getElementById('posDiscount').value) || 0;
+        const payMode = document.querySelector('input[name="posPayMode"]:checked').value;
+
+        const btn = document.getElementById('posCheckoutBtn');
+        btn.disabled = true;
+        btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Invoicing...';
+
+        fetch('/pos/checkout', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                customer_name: custName,
+                customer_phone: custPhone,
+                wing: currentBusiness,
+                order_type: orderType,
+                table_or_room: tableRoom,
+                discount: discount,
+                payment_mode: payMode,
+                cart: posCart
+            })
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                window.open(data.print_url, '_blank');
+                posClearCart();
+                document.getElementById('posCustName').value = '';
+                document.getElementById('posCustPhone').value = '';
+                document.getElementById('posDiscount').value = '0';
+                window.location.reload();
+            } else {
+                alert('Error: ' + (data.message || 'Could not complete invoice.'));
+                btn.disabled = false;
+                btn.innerHTML = '<i class="bi bi-printer-fill me-1"></i> Complete & Print Invoice (F8)';
+            }
+        })
+        .catch(err => {
+            console.error(err);
+            alert('Server error.');
+            btn.disabled = false;
+            btn.innerHTML = '<i class="bi bi-printer-fill me-1"></i> Complete & Print Invoice (F8)';
+        });
+    }
+
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'F8') {
+            e.preventDefault();
+            posProcessCheckout();
+        }
+    });
+</script>
+{% endblock %}

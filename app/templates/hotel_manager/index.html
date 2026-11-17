@@ -1,0 +1,166 @@
+{% extends 'base.html' %}
+{% block title %}Front Desk Room Manager - Hotel Lucky Residency{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+
+    <!-- Header Stats -->
+    <div class="d-flex flex-wrap justify-content-between align-items-center mb-4">
+        <div>
+            <span class="badge royal-badge-gold px-3 py-1 rounded-pill mb-1">Hotel New Lucky Residency</span>
+            <h3 class="royal-heading text-dark mb-0">Front Desk Room Manager (Live Room Rack)</h3>
+            <small class="text-muted">Live room status controller, quick check-in, and guest reservations log</small>
+        </div>
+        <div class="d-flex gap-2 mt-3 mt-md-0">
+            <span class="badge bg-success fs-6 px-3 py-2 rounded-pill"><i class="bi bi-door-open me-1"></i> Vacant: {{ available_count }}</span>
+            <span class="badge bg-danger fs-6 px-3 py-2 rounded-pill"><i class="bi bi-door-closed me-1"></i> Occupied: {{ occupied_count }}</span>
+            <button class="btn btn-royal-gold rounded-pill px-4 fw-bold" data-bs-toggle="modal" data-bs-target="#quickCheckinModal">
+                <i class="bi bi-person-plus-fill me-1"></i> New Guest Check-in
+            </button>
+        </div>
+    </div>
+
+    <!-- Live Room Rack Grid -->
+    <div class="row g-3 mb-5">
+        {% for room in rooms %}
+        <div class="col-md-6 col-lg-4">
+            <div class="card p-3 rounded-4 shadow-sm border bg-white h-100 position-relative" 
+                 style="border-left: 6px solid {% if room.status == 'available' %}#198754{% elif room.status == 'occupied' %}#dc3545{% else %}#ffc107{% endif %} !important;">
+                
+                <div class="d-flex justify-content-between align-items-start mb-2">
+                    <div>
+                        <span class="badge bg-light text-dark border fs-6 fw-bold">Room {{ room.room_number }}</span>
+                        <small class="text-muted d-block mt-1">{{ room.floor }}</small>
+                    </div>
+                    <span class="badge {% if room.status == 'available' %}bg-success{% elif room.status == 'occupied' %}bg-danger{% else %}bg-warning text-dark{% endif %} text-uppercase px-2 py-1">
+                        {% if room.status == 'available' %}Vacant (Available){% elif room.status == 'occupied' %}Occupied{% else %}Cleaning In Progress{% endif %}
+                    </span>
+                </div>
+
+                <h6 class="fw-bold text-dark mb-1">{{ room.room_type }}</h6>
+                <p class="small text-secondary mb-3 flex-grow-1" style="font-size: 0.8rem;">{{ room.amenities }}</p>
+
+                <div class="d-flex justify-content-between align-items-center pt-2 border-top">
+                    <div>
+                        <strong class="text-dark">₹{{ "%.0f"|format(room.price_per_night) }}</strong>
+                        <small class="text-muted">/night</small>
+                    </div>
+                    <!-- Quick Status Change Form -->
+                    <form action="{{ url_for('hotel_bp.update_room_status', room_id=room.id) }}" method="POST" class="d-flex gap-1">
+                        <select name="status" class="form-select form-select-sm" style="width: 125px;" onchange="this.form.submit()">
+                            <option value="available" {% if room.status == 'available' %}selected{% endif %}>Vacant</option>
+                            <option value="occupied" {% if room.status == 'occupied' %}selected{% endif %}>Occupied</option>
+                            <option value="cleaning" {% if room.status == 'cleaning' %}selected{% endif %}>Cleaning</option>
+                        </select>
+                    </form>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Recent Reservations & Inquiries Table -->
+    <div class="card p-4 rounded-4 shadow-sm border bg-white">
+        <h5 class="fw-bold text-dark mb-3"><i class="bi bi-journal-check me-2 text-warning"></i> Recent Room Bookings & Inquiries</h5>
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0 small">
+                <thead class="table-light">
+                    <tr>
+                        <th>Booking Ref</th>
+                        <th>Guest Name</th>
+                        <th>Phone</th>
+                        <th>Room</th>
+                        <th>Check-in</th>
+                        <th>Check-out</th>
+                        <th>Total Amount</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for b in bookings %}
+                    <tr>
+                        <td><strong>{{ b.booking_number }}</strong></td>
+                        <td>{{ b.guest_name }}</td>
+                        <td><a href="tel:{{ b.guest_phone }}" class="text-decoration-none">{{ b.guest_phone }}</a></td>
+                        <td>Room {{ b.room.room_number }} ({{ b.room.room_type }})</td>
+                        <td>{{ b.check_in.strftime('%d-%m-%Y') }}</td>
+                        <td>{{ b.check_out.strftime('%d-%m-%Y') }}</td>
+                        <td class="fw-bold">₹{{ "%.0f"|format(b.total_amount) }}</td>
+                        <td>
+                            <span class="badge {% if b.status == 'checked_in' %}bg-success{% elif b.status == 'confirmed' %}bg-primary{% else %}bg-warning text-dark{% endif %}">
+                                {{ b.status.capitalize() }}
+                            </span>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="8" class="text-center text-muted py-3">No active reservations recorded.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+
+<!-- Quick Check-in Modal -->
+<div class="modal fade" id="quickCheckinModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content" style="border-radius: 20px; border: 1.5px solid var(--royal-gold); overflow: hidden;">
+            <div class="modal-header text-white" style="background: linear-gradient(135deg, var(--royal-maroon-dark), var(--royal-maroon));">
+                <h5 class="modal-title royal-heading" style="color: #e5c158;">
+                    <i class="bi bi-person-badge me-1"></i> Front Desk - Quick Guest Check-in
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <form action="{{ url_for('hotel_bp.quick_checkin') }}" method="POST">
+                <div class="modal-body p-4 bg-light">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold small text-dark">Select Room</label>
+                        <select name="room_id" class="form-select" required>
+                            {% for r in rooms %}
+                            <option value="{{ r.id }}" {% if r.status != 'available' %}disabled{% endif %}>
+                                Room {{ r.room_number }} - {{ r.room_type }} (₹{{ "%.0f"|format(r.price_per_night) }}/night) {% if r.status != 'available' %}[Occupied]{% endif %}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold small text-dark">Guest Full Name</label>
+                        <input type="text" name="guest_name" class="form-control" placeholder="e.g. Surender Paul" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold small text-dark">Mobile Phone</label>
+                        <input type="tel" name="guest_phone" class="form-control" placeholder="e.g. 9811223344" required>
+                    </div>
+
+                    <div class="row g-2 mb-3">
+                        <div class="col-6">
+                            <label class="form-label fw-bold small text-dark">Stay Duration (Nights)</label>
+                            <input type="number" name="days" class="form-control" value="1" min="1" required>
+                        </div>
+                        <div class="col-6">
+                            <label class="form-label fw-bold small text-dark">Advance Received (₹)</label>
+                            <input type="number" name="advance" class="form-control" value="0">
+                        </div>
+                    </div>
+
+                    <div class="mb-2">
+                        <label class="form-label fw-bold small text-dark">ID Proof / Aadhaar Number</label>
+                        <input type="text" name="guest_id_proof" class="form-control" placeholder="Aadhaar / Driving License / Passport">
+                    </div>
+                </div>
+                <div class="modal-footer bg-white border-top">
+                    <button type="button" class="btn btn-outline-secondary rounded-pill" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-royal-gold rounded-pill px-4 fw-bold">
+                        <i class="bi bi-check-lg me-1"></i> Complete Check-in
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

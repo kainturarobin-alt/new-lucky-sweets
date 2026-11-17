@@ -1,0 +1,344 @@
+{% extends 'base.html' %}
+{% block title %}Executive Command Dashboard - New Lucky{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4 px-lg-4">
+
+    <!-- Top Admin Status Bar -->
+    <div class="card p-3 rounded-4 shadow-sm border bg-white mb-4">
+        <div class="d-flex flex-wrap justify-content-between align-items-center gap-3">
+            <div class="d-flex align-items-center gap-3">
+                <div class="d-flex align-items-center justify-content-center rounded-circle" style="width: 50px; height: 50px; background: linear-gradient(135deg, #d4af37, #9e7518);">
+                    <i class="bi bi-shield-lock-fill text-dark fs-4"></i>
+                </div>
+                <div>
+                    <span class="badge royal-badge-gold px-2 py-1 rounded-pill mb-1">Executive Security Portal</span>
+                    <h4 class="royal-heading text-dark mb-0">Business Command Center</h4>
+                    <small class="text-muted">New Lucky Sweets & Dairy • New Lucky Family Restaurant • New Lucky Residency</small>
+                </div>
+            </div>
+
+            <!-- Operations Navigation & User Logout -->
+            <div class="d-flex flex-wrap align-items-center gap-2">
+                <a href="{{ url_for('pos_bp.index') }}" class="btn btn-sm btn-royal-gold rounded-pill px-3 fw-bold">
+                    <i class="bi bi-calculator me-1"></i> Multi-POS Terminal
+                </a>
+                <a href="{{ url_for('hotel_bp.index') }}" class="btn btn-sm btn-outline-dark rounded-pill px-3">
+                    <i class="bi bi-door-open me-1"></i> Hotel Room Desk
+                </a>
+                <a href="{{ url_for('khata_bp.index') }}" class="btn btn-sm btn-outline-dark rounded-pill px-3">
+                    <i class="bi bi-journal-text me-1"></i> Dairy Ledger
+                </a>
+                <a href="{{ url_for('public_bp.index') }}" target="_blank" class="btn btn-sm btn-light border rounded-pill px-3">
+                    <i class="bi bi-globe me-1"></i> View Website
+                </a>
+                <a href="{{ url_for('admin_bp.logout') }}" class="btn btn-sm btn-outline-danger rounded-pill px-3">
+                    <i class="bi bi-box-arrow-right me-1"></i> Sign Out
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Flash Notifications -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        {% for cat, msg in messages %}
+        <div class="alert alert-{{ cat }} alert-dismissible fade show rounded-4 py-2 small mb-4">
+            <i class="bi bi-info-circle me-1"></i> {{ msg }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+        {% endfor %}
+    {% endif %}
+    {% endwith %}
+
+    <!-- 4 Core Business Revenue Metrics -->
+    <div class="row g-3 mb-4">
+        <!-- New Lucky Sweets & Dairy -->
+        <div class="col-sm-6 col-xl-3">
+            <div class="card p-3 rounded-4 shadow-sm border bg-white h-100 position-relative" style="border-left: 5px solid #d4af37 !important;">
+                <span class="small text-muted fw-bold d-block mb-1">New Lucky Sweets & Dairy</span>
+                <h3 class="fw-bold mb-1" style="color: var(--royal-maroon);">₹{{ "%.0f"|format(sweets_revenue) }}</h3>
+                <small class="text-success"><i class="bi bi-basket2-fill"></i> Mithai, Fresh Paneer & Snacks</small>
+            </div>
+        </div>
+
+        <!-- New Lucky Family Restaurant -->
+        <div class="col-sm-6 col-xl-3">
+            <div class="card p-3 rounded-4 shadow-sm border bg-white h-100 position-relative" style="border-left: 5px solid #dc3545 !important;">
+                <span class="small text-muted fw-bold d-block mb-1">New Lucky Family Restaurant</span>
+                <h3 class="fw-bold mb-1 text-danger">₹{{ "%.0f"|format(rest_revenue) }}</h3>
+                <small class="text-secondary"><i class="bi bi-egg-fried"></i> Dining, Gravies & Thali Combos</small>
+            </div>
+        </div>
+
+        <!-- New Lucky Residency -->
+        <div class="col-sm-6 col-xl-3">
+            <div class="card p-3 rounded-4 shadow-sm border bg-white h-100 position-relative" style="border-left: 5px solid #0d6efd !important;">
+                <span class="small text-muted fw-bold d-block mb-1">New Lucky Residency</span>
+                <h3 class="fw-bold mb-1 text-primary">{{ occupied_rooms }} / {{ total_rooms }} Rooms</h3>
+                <small class="text-primary"><i class="bi bi-door-closed"></i> {{ available_rooms }} Vacant • {{ hotel_bookings|length }} Bookings</small>
+            </div>
+        </div>
+
+        <!-- Outstanding Ledger Receivables -->
+        <div class="col-sm-6 col-xl-3">
+            <div class="card p-3 rounded-4 shadow-sm border bg-white h-100 position-relative" style="border-left: 5px solid #198754 !important;">
+                <span class="small text-muted fw-bold d-block mb-1">Dairy Ledger Credit Due</span>
+                <h3 class="fw-bold mb-1 text-dark">₹{{ "%.0f"|format(total_khata_due) }}</h3>
+                <small class="text-success"><i class="bi bi-droplet-half"></i> {{ "%.1f"|format(total_daily_milk) }}L Daily Milk Delivery</small>
+            </div>
+        </div>
+    </div>
+
+    <!-- Live Online & In-Store Orders Control Stream -->
+    <div class="card p-4 rounded-4 shadow-sm border bg-white mb-4">
+        <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+            <div>
+                <h5 class="fw-bold text-dark mb-0">
+                    <i class="bi bi-activity text-warning me-2"></i> Live Orders & Delivery Dispatch
+                </h5>
+                <small class="text-muted">Control and update live order progress for customers in real-time</small>
+            </div>
+
+            <!-- Wing & Status Filter Bar -->
+            <div class="d-flex flex-wrap gap-2">
+                <div class="btn-group btn-group-sm">
+                    <a href="{{ url_for('admin_bp.dashboard', wing='all') }}" class="btn {% if current_wing_filter == 'all' %}btn-dark{% else %}btn-outline-dark{% endif %}">All</a>
+                    <a href="{{ url_for('admin_bp.dashboard', wing='sweets') }}" class="btn {% if current_wing_filter == 'sweets' %}btn-dark{% else %}btn-outline-dark{% endif %}">Sweets & Dairy</a>
+                    <a href="{{ url_for('admin_bp.dashboard', wing='restaurant') }}" class="btn {% if current_wing_filter == 'restaurant' %}btn-dark{% else %}btn-outline-dark{% endif %}">Restaurant</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0 small">
+                <thead class="table-light">
+                    <tr>
+                        <th>Order No</th>
+                        <th>Customer</th>
+                        <th>Business Wing</th>
+                        <th>Items Summary</th>
+                        <th>Amount</th>
+                        <th>Live Status</th>
+                        <th class="text-center">Update Progress</th>
+                        <th class="text-center">Receipt</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for ord in recent_orders %}
+                    <tr>
+                        <td>
+                            <strong class="text-dark">{{ ord.order_number }}</strong>
+                            <small class="d-block text-muted">{{ ord.created_at.strftime('%d-%m %I:%M %p') }}</small>
+                        </td>
+                        <td>
+                            <strong>{{ ord.customer_name }}</strong>
+                            <small class="d-block text-secondary">{{ ord.customer_phone or 'Counter' }}</small>
+                            {% if ord.table_or_room %}
+                            <span class="badge bg-light text-dark border">📍 {{ ord.table_or_room }}</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <span class="badge {% if ord.wing == 'sweets' %}bg-warning-subtle text-dark border{% elif ord.wing == 'restaurant' %}bg-danger-subtle text-danger border{% else %}bg-primary-subtle text-primary border{% endif %}">
+                                {% if ord.wing == 'sweets' %}Sweets & Dairy{% elif ord.wing == 'restaurant' %}Family Restaurant{% else %}Residency{% endif %}
+                            </span>
+                        </td>
+                        <td style="max-width: 250px;">
+                            <div class="text-truncate">
+                                {% for item in ord.items %}
+                                <span>{{ item.item_name }} ({{ item.quantity }}{{ item.unit }}){% if not loop.last %}, {% endif %}</span>
+                                {% endfor %}
+                            </div>
+                        </td>
+                        <td class="fw-bold text-dark">₹{{ "%.0f"|format(ord.final_amount) }}</td>
+                        <td>
+                            <span class="badge 
+                                {% if ord.status == 'completed' %}bg-success
+                                {% elif ord.status == 'ready' %}bg-primary
+                                {% elif ord.status == 'preparing' %}bg-warning text-dark
+                                {% elif ord.status == 'cancelled' %}bg-danger
+                                {% else %}bg-secondary{% endif %}">
+                                {{ ord.status.capitalize() }}
+                            </span>
+                        </td>
+                        <td class="text-center">
+                            <!-- 1-Click Status Update Form -->
+                            <form action="{{ url_for('admin_bp.update_order_status', order_id=ord.id) }}" method="POST" class="d-inline-flex gap-1">
+                                {% if ord.status == 'pending' %}
+                                <input type="hidden" name="status" value="preparing">
+                                <button type="submit" class="btn btn-xs btn-outline-warning py-0 px-2 fw-semibold">
+                                    <i class="bi bi-fire"></i> Start Preparing
+                                </button>
+                                {% elif ord.status == 'preparing' %}
+                                <input type="hidden" name="status" value="ready">
+                                <button type="submit" class="btn btn-xs btn-outline-primary py-0 px-2 fw-semibold">
+                                    <i class="bi bi-box-seam"></i> Mark Ready
+                                </button>
+                                {% elif ord.status == 'ready' %}
+                                <input type="hidden" name="status" value="completed">
+                                <button type="submit" class="btn btn-xs btn-outline-success py-0 px-2 fw-semibold">
+                                    <i class="bi bi-check-lg"></i> Complete
+                                </button>
+                                {% else %}
+                                <span class="text-muted small">Finalized</span>
+                                {% endif %}
+                            </form>
+                        </td>
+                        <td class="text-center">
+                            <a href="{{ url_for('public_bp.order_detail', order_number=ord.order_number) }}" target="_blank" class="btn btn-sm btn-outline-secondary py-0 px-2">
+                                <i class="bi bi-printer"></i>
+                            </a>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="8" class="text-center text-muted py-4">No orders matching selected criteria.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Product & Inventory Controller -->
+    <div class="card p-4 rounded-4 shadow-sm border bg-white mb-4">
+        <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+            <div>
+                <h5 class="fw-bold text-dark mb-0">
+                    <i class="bi bi-toggle-on text-warning me-2"></i> Product Catalog & Live Stock Controller
+                </h5>
+                <small class="text-muted">Manage product availability and pricing for New Lucky Sweets & Restaurant</small>
+            </div>
+            <button class="btn btn-sm btn-royal-gold rounded-pill px-3 fw-bold" data-bs-toggle="modal" data-bs-target="#addProductModal">
+                <i class="bi bi-plus-circle me-1"></i> Add New Product
+            </button>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0 small">
+                <thead class="table-light">
+                    <tr>
+                        <th>Product Name</th>
+                        <th>Business Wing</th>
+                        <th>Price</th>
+                        <th>Status</th>
+                        <th class="text-center">Live Toggle</th>
+                        <th class="text-center">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in items %}
+                    <tr>
+                        <td>
+                            <strong class="text-dark">{{ item.name }}</strong>
+                        </td>
+                        <td>
+                            <span class="badge {% if item.wing == 'sweets' %}bg-warning-subtle text-dark border{% else %}bg-danger-subtle text-danger border{% endif %}">
+                                {{ item.wing.capitalize() }}
+                            </span>
+                        </td>
+                        <td class="fw-bold">₹{{ "%.0f"|format(item.price) }} / {{ item.unit }}</td>
+                        <td>
+                            {% if item.is_available %}
+                            <span class="badge bg-success-subtle text-success border"><i class="bi bi-check-circle me-1"></i> In Stock</span>
+                            {% else %}
+                            <span class="badge bg-danger-subtle text-danger border"><i class="bi bi-x-circle me-1"></i> Out of Stock</span>
+                            {% endif %}
+                        </td>
+                        <td class="text-center">
+                            <form action="{{ url_for('admin_bp.toggle_item', item_id=item.id) }}" method="POST">
+                                <button type="submit" class="btn btn-xs {% if item.is_available %}btn-outline-danger{% else %}btn-success{% endif %} rounded-pill px-3 py-1 fw-bold">
+                                    {% if item.is_available %}Mark Out of Stock{% else %}Mark In Stock{% endif %}
+                                </button>
+                            </form>
+                        </td>
+                        <td class="text-center">
+                            <form action="{{ url_for('admin_bp.delete_item', item_id=item.id) }}" method="POST" onsubmit="return confirm('Delete this product permanently?');">
+                                <button type="submit" class="btn btn-sm btn-outline-danger py-0 px-2 border-0">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+
+<!-- Add Product Modal -->
+<div class="modal fade" id="addProductModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content" style="border-radius: 20px; border: 1.5px solid var(--royal-gold); overflow: hidden;">
+            <div class="modal-header text-white" style="background: linear-gradient(135deg, var(--royal-maroon-dark), var(--royal-maroon));">
+                <h5 class="modal-title royal-heading" style="color: #e5c158;">
+                    <i class="bi bi-plus-circle me-1"></i> Add New Product to Menu
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <form action="{{ url_for('admin_bp.add_item') }}" method="POST">
+                <div class="modal-body p-4 bg-light">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold small text-dark">Product Name <span class="text-danger">*</span></label>
+                        <input type="text" name="name" class="form-control" placeholder="e.g. Kaju Peda or Paneer Tikka" required>
+                    </div>
+
+                    <div class="row g-2 mb-3">
+                        <div class="col-6">
+                            <label class="form-label fw-bold small text-dark">Business Wing</label>
+                            <select name="wing" class="form-select">
+                                <option value="sweets">New Lucky Sweets & Dairy</option>
+                                <option value="restaurant">New Lucky Family Restaurant</option>
+                            </select>
+                        </div>
+                        <div class="col-6">
+                            <label class="form-label fw-bold small text-dark">Category</label>
+                            <select name="category_id" class="form-select">
+                                {% for c in categories %}
+                                <option value="{{ c.id }}">{{ c.name }} ({{ c.wing.capitalize() }})</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="row g-2 mb-3">
+                        <div class="col-6">
+                            <label class="form-label fw-bold small text-dark">Selling Price (₹) <span class="text-danger">*</span></label>
+                            <input type="number" step="1" name="price" class="form-control" placeholder="e.g. 520" required>
+                        </div>
+                        <div class="col-6">
+                            <label class="form-label fw-bold small text-dark">Unit</label>
+                            <select name="unit" class="form-select">
+                                <option value="kg">kg (Kilogram)</option>
+                                <option value="pc">pc (Piece)</option>
+                                <option value="plate">plate</option>
+                                <option value="litre">litre</option>
+                                <option value="glass">glass</option>
+                                <option value="box">box</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold small text-dark">Short Description</label>
+                        <textarea name="description" class="form-control" rows="2" placeholder="Ingredients, taste, packaging details..."></textarea>
+                    </div>
+
+                    <div class="mb-2">
+                        <label class="form-label fw-bold small text-dark">Image URL (Optional)</label>
+                        <input type="url" name="image_url" class="form-control" placeholder="https://images.unsplash.com/...">
+                    </div>
+                </div>
+                <div class="modal-footer bg-white border-top">
+                    <button type="button" class="btn btn-outline-secondary rounded-pill" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-royal-gold rounded-pill px-4 fw-bold">
+                        <i class="bi bi-save me-1"></i> Save Product
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

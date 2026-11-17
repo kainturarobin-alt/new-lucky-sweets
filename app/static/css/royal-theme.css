@@ -1,0 +1,286 @@
+/* ==========================================================
+   NEW LUCKY SWEETS, RESTAURANT & HOTEL - ROYAL THEME
+   Inspired by Royal Indian Palaces, Gold Accents & Modern Elegance
+   ========================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700;800&family=Outfit:wght@300;400;500;600;700&display=swap');
+
+:root {
+    --royal-maroon: #4a071f;
+    --royal-maroon-dark: #2e0413;
+    --royal-maroon-light: #6a102f;
+    
+    --royal-gold: #c99a2c;
+    --royal-gold-light: #e5c158;
+    --royal-gold-dark: #9e7518;
+    --royal-gold-glow: rgba(201, 154, 44, 0.28);
+    
+    --royal-cream: #fdfaf4;
+    --royal-ivory: #f7f1e5;
+    --royal-card-bg: #ffffff;
+    --royal-border: rgba(201, 154, 44, 0.22);
+    
+    --font-heading: 'Cinzel', serif;
+    --font-body: 'Outfit', sans-serif;
+}
+
+body {
+    font-family: var(--font-body);
+    background-color: var(--royal-cream);
+    color: #2b1f24;
+    overflow-x: hidden;
+}
+
+h1, h2, h3, h4, .royal-heading {
+    font-family: var(--font-heading);
+    letter-spacing: 0.5px;
+}
+
+/* Royal Navbar */
+.royal-navbar {
+    background: linear-gradient(135deg, var(--royal-maroon-dark) 0%, var(--royal-maroon) 100%);
+    border-bottom: 2px solid var(--royal-gold);
+    box-shadow: 0 4px 20px rgba(46, 4, 19, 0.35);
+}
+
+.royal-brand-title {
+    font-family: var(--font-heading);
+    font-weight: 700;
+    color: #ffffff !important;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+}
+
+.royal-brand-gold {
+    color: var(--royal-gold-light) !important;
+}
+
+.royal-nav-link {
+    color: #f7f1e5 !important;
+    font-weight: 500;
+    font-size: 0.95rem;
+    padding: 0.5rem 0.85rem !important;
+    transition: all 0.2s ease;
+    border-radius: 8px;
+}
+
+.royal-nav-link:hover, .royal-nav-link.active {
+    color: var(--royal-gold-light) !important;
+    background: rgba(201, 154, 44, 0.15);
+}
+
+/* Royal Hero Banner */
+.royal-hero-banner {
+    background: radial-gradient(circle at top, #5e0d29 0%, #360516 70%, #1f020c 100%);
+    color: #ffffff;
+    border-radius: 28px;
+    padding: 3.5rem 1.75rem;
+    position: relative;
+    overflow: hidden;
+    border: 1.5px solid var(--royal-gold);
+    box-shadow: 0 15px 35px rgba(46, 4, 19, 0.25);
+}
+
+.royal-hero-banner::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(201, 154, 44, 0.08) 0%, transparent 60%);
+    pointer-events: none;
+}
+
+/* Gold Buttons */
+.btn-royal-gold {
+    background: linear-gradient(135deg, #d4af37 0%, #b8860b 100%);
+    color: #2b0b14 !important;
+    font-weight: 700;
+    border: 1px solid #f3e5ab;
+    box-shadow: 0 4px 15px var(--royal-gold-glow);
+    transition: all 0.25s ease;
+}
+
+.btn-royal-gold:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 22px rgba(201, 154, 44, 0.45);
+    background: linear-gradient(135deg, #e5c158 0%, #c99a2c 100%);
+}
+
+.btn-royal-outline {
+    border: 1.5px solid var(--royal-gold);
+    color: var(--royal-gold-light) !important;
+    background: rgba(201, 154, 44, 0.08);
+    font-weight: 600;
+    transition: all 0.2s ease;
+}
+
+.btn-royal-outline:hover {
+    background: var(--royal-gold);
+    color: #2b0b14 !important;
+}
+
+.btn-royal-maroon {
+    background: linear-gradient(135deg, var(--royal-maroon) 0%, var(--royal-maroon-dark) 100%);
+    color: var(--royal-gold-light) !important;
+    border: 1px solid var(--royal-gold);
+    font-weight: 600;
+}
+
+.btn-royal-maroon:hover {
+    background: var(--royal-maroon-light);
+    color: #ffffff !important;
+}
+
+/* Badges */
+.royal-badge {
+    background: rgba(201, 154, 44, 0.15);
+    color: #8b6508;
+    border: 1px solid var(--royal-border);
+    font-weight: 600;
+}
+
+.royal-badge-gold {
+    background: linear-gradient(135deg, #d4af37, #9e7518);
+    color: #1a040b;
+    font-weight: 700;
+    box-shadow: 0 2px 8px rgba(201, 154, 44, 0.3);
+}
+
+/* KiraanaSmart-style Sideways Snap-Scrolling Carousel */
+.royal-snap-carousel {
+    display: flex;
+    gap: 1.25rem;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    padding: 0.5rem 0.25rem 1.5rem 0.25rem;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+}
+
+.royal-snap-carousel::-webkit-scrollbar {
+    height: 6px;
+}
+
+.royal-snap-carousel::-webkit-scrollbar-thumb {
+    background: var(--royal-gold);
+    border-radius: 10px;
+}
+
+.royal-snap-card {
+    flex: 0 0 320px;
+    scroll-snap-align: start;
+    border: 1px solid var(--royal-border);
+    border-radius: 20px;
+    transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+    background: #ffffff;
+    overflow: hidden;
+}
+
+@media (min-width: 768px) {
+    .royal-snap-card {
+        flex: 0 0 350px;
+    }
+}
+
+.royal-snap-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 14px 28px rgba(74, 7, 31, 0.12);
+    border-color: var(--royal-gold);
+}
+
+/* Wings Cards */
+.wing-card-img {
+    height: 180px;
+    width: 100%;
+    object-fit: cover;
+    transition: transform 0.4s ease;
+}
+
+.royal-snap-card:hover .wing-card-img {
+    transform: scale(1.05);
+}
+
+/* Royal Menu Cards */
+.royal-menu-card {
+    background: #ffffff;
+    border: 1px solid var(--royal-border);
+    border-radius: 18px;
+    overflow: hidden;
+    transition: all 0.25s ease;
+}
+
+.royal-menu-card:hover {
+    border-color: var(--royal-gold);
+    box-shadow: 0 10px 24px rgba(74, 7, 31, 0.09);
+    transform: translateY(-3px);
+}
+
+.royal-item-img {
+    height: 170px;
+    width: 100%;
+    object-fit: cover;
+}
+
+/* Room Cards */
+.royal-room-card {
+    background: #ffffff;
+    border: 1px solid var(--royal-border);
+    border-radius: 20px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.royal-room-card:hover {
+    border-color: var(--royal-gold);
+    box-shadow: 0 12px 30px rgba(74, 7, 31, 0.14);
+}
+
+/* Floating Cart Drawer */
+.cart-floating-badge {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    z-index: 1050;
+    box-shadow: 0 8px 25px rgba(46, 4, 19, 0.4);
+}
+
+/* Royal Footer */
+.royal-footer {
+    background: linear-gradient(180deg, #2e0413 0%, #170109 100%);
+    color: #e5d8dc;
+    border-top: 2px solid var(--royal-gold);
+}
+
+.royal-footer a {
+    color: #d1b4bd;
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.royal-footer a:hover {
+    color: var(--royal-gold-light);
+}
+
+/* POS Terminal Specifics */
+.pos-screen {
+    background: #f4ede0;
+    min-height: calc(100vh - 65px);
+}
+
+.pos-cart-panel {
+    background: #ffffff;
+    border: 1px solid var(--royal-border);
+    border-radius: 16px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+}
+
+@keyframes royalBadgeBounce {
+    0% { transform: scale(1); }
+    40% { transform: scale(1.35); }
+    100% { transform: scale(1); }
+}
+
+.badge-bounce {
+    animation: royalBadgeBounce 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}

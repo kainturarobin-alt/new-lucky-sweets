@@ -1,0 +1,126 @@
+{% extends 'base.html' %}
+{% block title %}Lucky Family Restaurant - Dine-in Menu & Food Orders | Dehradun{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+
+    <!-- Restaurant Hero Banner -->
+    <div class="p-4 p-md-5 rounded-4 mb-4 text-white position-relative overflow-hidden" 
+         style="background: linear-gradient(135deg, #1f020c 0%, #4a071f 100%); border: 1.5px solid var(--royal-gold);">
+        <div class="row align-items-center">
+            <div class="col-md-8">
+                <span class="badge bg-danger px-3 py-1 rounded-pill mb-2">Family Dining & Takeaway Counter</span>
+                <h2 class="display-6 fw-bold royal-heading text-white mb-2">Lucky Family Restaurant</h2>
+                <p class="text-white-50 mb-3" style="max-width: 600px;">
+                    Authentic North Indian curries, fresh clay-oven tandoori rotis & naans, Chinese fast food, and our grand Royal Deluxe Thali. Enjoy a serene, air-conditioned family dining experience.
+                </p>
+                <div class="d-flex flex-wrap gap-2">
+                    <button class="btn btn-royal-gold rounded-pill px-4 fw-bold" data-bs-toggle="offcanvas" data-bs-target="#cartOffcanvas">
+                        <i class="bi bi-bag-check-fill me-1"></i> View Order (<span class="cart-count-badge">0</span>)
+                    </button>
+                    <a href="tel:+919412153429" class="btn btn-royal-outline rounded-pill px-4">
+                        <i class="bi bi-telephone-fill me-1"></i> Reserve Table: 094121 53429
+                    </a>
+                </div>
+            </div>
+            <div class="col-md-4 text-md-end mt-4 mt-md-0 d-none d-md-block">
+                <i class="bi bi-egg-fried text-warning" style="font-size: 5rem; opacity: 0.3;"></i>
+            </div>
+        </div>
+    </div>
+
+    <!-- Category Filter Tabs -->
+    <div class="d-flex gap-2 overflow-x-auto pb-2 mb-4 scrollbar-none">
+        <button class="btn btn-sm btn-dark rounded-pill px-3 filter-btn active" data-cat="all">
+            All Dishes
+        </button>
+        {% for cat in categories %}
+        <button class="btn btn-sm btn-outline-dark rounded-pill px-3 filter-btn" data-cat="cat-{{ cat.id }}">
+            <i class="bi {{ cat.icon }} me-1 text-warning"></i> {{ cat.name }}
+        </button>
+        {% endfor %}
+    </div>
+
+    <!-- Dishes Grid -->
+    <div class="row g-3">
+        {% for item in items %}
+        <div class="col-md-6 col-lg-4 item-card-wrapper cat-{{ item.category_id }}">
+            <div class="royal-menu-card p-3 h-100 d-flex flex-column shadow-sm">
+                <div class="position-relative mb-3">
+                    <img src="{{ item.image_url }}" alt="{{ item.name }}" class="royal-item-img rounded-3">
+                    <span class="position-absolute top-0 start-0 m-2 badge bg-success text-white">
+                        <i class="bi bi-check-circle-fill"></i> 100% Pure Veg
+                    </span>
+                    {% if item.is_popular %}
+                    <span class="position-absolute top-0 end-0 m-2 badge royal-badge-gold">
+                        Chef Special
+                    </span>
+                    {% endif %}
+                </div>
+                
+                <div class="flex-grow-1">
+                    <h5 class="fw-bold text-dark mb-1">{{ item.name }}</h5>
+                    <p class="small text-muted mb-3">{{ item.description }}</p>
+                </div>
+
+                <div class="d-flex justify-content-between align-items-center pt-2 border-top">
+                    <div>
+                        <span class="fs-5 fw-bold" style="color: var(--royal-maroon);">₹{{ "%.0f"|format(item.price) }}</span>
+                        <small class="text-muted">/ {{ item.unit }}</small>
+                    </div>
+                    <div class="d-flex gap-1">
+                        <button class="btn btn-royal-gold btn-sm rounded-pill px-3 fw-bold" 
+                                onclick="addRestaurantItem(this, {{ item.id }}, '{{ item.name|replace("'", "\\'") }}', {{ item.price }}, '{{ item.unit }}', '{{ item.image_url }}')">
+                            <i class="bi bi-bag-plus me-1"></i> Place Order
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+</div>
+
+<script>
+    function addRestaurantItem(btn, id, name, price, unit, img) {
+        if (window.RoyalCart) {
+            RoyalCart.addItem({ id: id, name: name, price: price, unit: unit, quantity: 1, image_url: img }, true);
+        }
+        if (btn) {
+            const orig = btn.innerHTML;
+            btn.classList.remove('btn-royal-gold');
+            btn.classList.add('btn-success', 'text-white');
+            btn.innerHTML = '<i class="bi bi-check2-circle me-1"></i> Added!';
+            btn.disabled = true;
+            setTimeout(() => {
+                btn.classList.remove('btn-success', 'text-white');
+                btn.classList.add('btn-royal-gold');
+                btn.innerHTML = orig;
+                btn.disabled = false;
+            }, 1200);
+        }
+    }
+
+    // Category Filter Pills
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('.filter-btn').forEach(b => {
+                b.classList.remove('active', 'btn-dark');
+                b.classList.add('btn-outline-dark');
+            });
+            btn.classList.add('active', 'btn-dark');
+            btn.classList.remove('btn-outline-dark');
+
+            const cat = btn.getAttribute('data-cat');
+            document.querySelectorAll('.item-card-wrapper').forEach(card => {
+                if (cat === 'all' || card.classList.contains(cat)) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        });
+    });
+</script>
+{% endblock %}

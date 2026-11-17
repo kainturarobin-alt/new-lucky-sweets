@@ -1,0 +1,131 @@
+{% extends 'base.html' %}
+{% block title %}Customer Dairy & Milk Ledger (Khata) - New Lucky Sweets & Dairy{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+
+    <!-- Header Stats -->
+    <div class="d-flex flex-wrap justify-content-between align-items-center mb-4">
+        <div>
+            <span class="badge royal-badge-gold px-3 py-1 rounded-pill mb-1">New Lucky Dairy</span>
+            <h3 class="royal-heading text-dark mb-0">Customer Dairy Subscription & Ledger</h3>
+            <small class="text-muted">Monthly account ledger and credit records for regular daily milk and paneer patrons</small>
+        </div>
+        <div class="d-flex gap-2 mt-3 mt-md-0">
+            <span class="badge bg-danger fs-6 px-3 py-2 rounded-pill"><i class="bi bi-wallet2 me-1"></i> Total Due: ₹{{ "%.0f"|format(total_receivable) }}</span>
+            <span class="badge bg-success fs-6 px-3 py-2 rounded-pill"><i class="bi bi-droplet-fill me-1"></i> Daily Quota: {{ "%.1f"|format(total_daily_milk) }}L/day</span>
+            <button class="btn btn-royal-gold rounded-pill px-4 fw-bold" data-bs-toggle="modal" data-bs-target="#addCustomerModal">
+                <i class="bi bi-person-plus-fill me-1"></i> Add New Customer
+            </button>
+        </div>
+    </div>
+
+    <!-- Customers List Table -->
+    <div class="card p-4 rounded-4 shadow-sm border bg-white">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light small">
+                    <tr>
+                        <th>Customer Name</th>
+                        <th>Mobile Number</th>
+                        <th>Address / Area</th>
+                        <th class="text-center">Daily Milk Quota</th>
+                        <th class="text-end">Milk Rate (₹/L)</th>
+                        <th class="text-end">Current Balance</th>
+                        <th class="text-center">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for c in customers %}
+                    <tr>
+                        <td>
+                            <strong class="text-dark fs-6">{{ c.name }}</strong>
+                        </td>
+                        <td>
+                            <a href="tel:{{ c.phone }}" class="text-decoration-none text-secondary">
+                                <i class="bi bi-telephone text-success me-1"></i> {{ c.phone }}
+                            </a>
+                        </td>
+                        <td class="small text-muted">{{ c.address or 'Miyanwala, Dehradun' }}</td>
+                        <td class="text-center">
+                            <span class="badge bg-primary-subtle text-primary border px-2 py-1">
+                                {{ c.daily_milk_qty }} Litre
+                            </span>
+                        </td>
+                        <td class="text-end fw-semibold">₹{{ "%.0f"|format(c.milk_rate) }}</td>
+                        <td class="text-end">
+                            {% if c.current_balance > 0 %}
+                            <span class="fs-6 fw-bold text-danger">₹{{ "%.0f"|format(c.current_balance) }}</span>
+                            <small class="d-block text-danger" style="font-size: 0.7rem;">(Due)</small>
+                            {% else %}
+                            <span class="badge bg-success-subtle text-success border">Settled (₹0)</span>
+                            {% endif %}
+                        </td>
+                        <td class="text-center">
+                            <a href="{{ url_for('khata_bp.customer_detail', customer_id=c.id) }}" class="btn btn-sm btn-royal-gold rounded-pill px-3">
+                                View Passbook <i class="bi bi-arrow-right"></i>
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+
+<!-- Add Customer Modal -->
+<div class="modal fade" id="addCustomerModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content" style="border-radius: 20px; border: 1.5px solid var(--royal-gold); overflow: hidden;">
+            <div class="modal-header text-white" style="background: linear-gradient(135deg, var(--royal-maroon-dark), var(--royal-maroon));">
+                <h5 class="modal-title royal-heading" style="color: #e5c158;">
+                    <i class="bi bi-person-plus me-1"></i> Add Regular Dairy Subscriber
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <form action="{{ url_for('khata_bp.add_customer') }}" method="POST">
+                <div class="modal-body p-4 bg-light">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold small text-dark">Customer Name <span class="text-danger">*</span></label>
+                        <input type="text" name="name" class="form-control" placeholder="e.g. Rakesh Semwal" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold small text-dark">Mobile Number <span class="text-danger">*</span></label>
+                        <input type="tel" name="phone" class="form-control" placeholder="e.g. 9897123450" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold small text-dark">Delivery Address</label>
+                        <input type="text" name="address" class="form-control" placeholder="e.g. Lane 3, Raipur Road, Miyawala">
+                    </div>
+
+                    <div class="row g-2 mb-3">
+                        <div class="col-6">
+                            <label class="form-label fw-bold small text-dark">Daily Milk (Litres)</label>
+                            <input type="number" step="0.5" name="daily_milk_qty" class="form-control" value="1.0" required>
+                        </div>
+                        <div class="col-6">
+                            <label class="form-label fw-bold small text-dark">Milk Rate (₹/Litre)</label>
+                            <input type="number" step="1" name="milk_rate" class="form-control" value="66.0" required>
+                        </div>
+                    </div>
+
+                    <div class="mb-2">
+                        <label class="form-label fw-bold small text-dark">Opening Balance (₹)</label>
+                        <input type="number" name="initial_balance" class="form-control" value="0.0">
+                    </div>
+                </div>
+                <div class="modal-footer bg-white border-top">
+                    <button type="button" class="btn btn-outline-secondary rounded-pill" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-royal-gold rounded-pill px-4 fw-bold">
+                        <i class="bi bi-save me-1"></i> Save Customer
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
